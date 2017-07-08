@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=1]
+
+[ext_resource path="res://src/scripts/escalera.gd" type="Script" id=1]
+[ext_resource path="res://src/sprites/escenarios.png" type="Texture" id=2]
+
+[node name="escalera" type="Node2D"]
+
+editor/display_folded = true
+script/script = ExtResource( 1 )
+azul = false
+
+[node name="sprite" type="Sprite" parent="."]
+
+texture = ExtResource( 2 )
+region = true
+region_rect = Rect2( 32, 0, 32, 32 )
+
+

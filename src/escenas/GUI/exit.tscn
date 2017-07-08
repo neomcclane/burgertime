@@ -1,0 +1,116 @@
+[gd_scene load_steps=5 format=1]
+
+[ext_resource path="res://src/scripts/exit.gd" type="Script" id=1]
+[ext_resource path="res://src/escenas/sonidos.tscn" type="PackedScene" id=2]
+[ext_resource path="res://src/fonts/5mikropix_40.fnt" type="BitmapFont" id=3]
+
+[sub_resource type="StyleBoxFlat" id=1]
+
+content_margin/left = -1.0
+content_margin/right = -1.0
+content_margin/top = -1.0
+content_margin/bottom = -1.0
+bg_color = Color( 0.270588, 0.270588, 0.270588, 0.814196 )
+light_color = Color( 0.8, 0.8, 0.8, 1 )
+dark_color = Color( 0.8, 0.8, 0.8, 1 )
+border_size = 0
+border_blend = true
+draw_bg = true
+
+[node name="exit" type="Node2D"]
+
+process/pause_mode = 2
+script/script = ExtResource( 1 )
+
+[node name="sonidos" parent="." instance=ExtResource( 2 )]
+
+[node name="Control" type="Control" parent="."]
+
+anchor/right = 1
+anchor/bottom = 1
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 1
+size_flags/vertical = 1
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 760.0
+margin/bottom = 560.0
+
+[node name="Panel" type="Panel" parent="Control"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -96.0
+margin/top = 0.0
+margin/right = 1440.0
+margin/bottom = 1328.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="info" type="Label" parent="Control/Panel"]
+
+anchor/top = 3
+anchor/right = 1
+anchor/bottom = 3
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 96.0
+margin/top = 48.0
+margin/right = 59.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "DO YOU WANT TO EXIT THE GAME?"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="yes" type="Label" parent="Control/Panel"]
+
+anchor/top = 3
+anchor/right = 1
+anchor/bottom = 3
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 224.0
+margin/top = -48.0
+margin/right = 448.0
+margin/bottom = -88.0
+custom_fonts/font = ExtResource( 3 )
+custom_colors/font_color = Color( 0.917647, 0.235294, 0.235294, 1 )
+text = "YES"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="no" type="Label" parent="Control/Panel"]
+
+anchor/top = 3
+anchor/right = 1
+anchor/bottom = 3
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 480.0
+margin/top = -48.0
+margin/right = 192.0
+margin/bottom = -88.0
+custom_fonts/font = ExtResource( 3 )
+text = "NO"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+

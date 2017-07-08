@@ -1,0 +1,184 @@
+[gd_scene load_steps=5 format=1]
+
+[ext_resource path="res://src/fonts/5mikropix_40.fnt" type="BitmapFont" id=1]
+[ext_resource path="res://src/sprites/icons.png" type="Texture" id=2]
+
+[sub_resource type="StyleBoxFlat" id=2]
+
+content_margin/left = -1.0
+content_margin/right = -1.0
+content_margin/top = -1.0
+content_margin/bottom = -1.0
+bg_color = Color( 0.126114, 0.329825, 0.339844, 1 )
+light_color = Color( 0.8, 0.8, 0.8, 1 )
+dark_color = Color( 0.8, 0.8, 0.8, 1 )
+border_size = 0
+border_blend = true
+draw_bg = true
+
+[sub_resource type="StyleBoxFlat" id=1]
+
+content_margin/left = -1.0
+content_margin/right = -1.0
+content_margin/top = -1.0
+content_margin/bottom = -1.0
+bg_color = Color( 0.113281, 0.113281, 0.113281, 1 )
+light_color = Color( 0.8, 0.8, 0.8, 1 )
+dark_color = Color( 0.8, 0.8, 0.8, 1 )
+border_size = 0
+border_blend = true
+draw_bg = true
+
+[node name="barraInfo" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 352.0
+margin/top = -64.0
+margin/right = 392.0
+margin/bottom = -24.0
+
+[node name="panelAbajo" type="Panel" parent="Control"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -448.0
+margin/top = 0.0
+margin/right = 1088.0
+margin/bottom = 1376.0
+custom_styles/panel = SubResource( 2 )
+
+[node name="panelArriba" type="Panel" parent="Control"]
+
+anchor/right = 1
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -448.0
+margin/top = -32.0
+margin/right = -1048.0
+margin/bottom = 64.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="life 2" type="Node" parent="Control/panelArriba"]
+
+editor/display_folded = true
+
+[node name="life" type="Label" parent="Control/panelArriba/life 2"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 1280.0
+margin/top = -64.0
+margin/right = 1320.0
+margin/bottom = -24.0
+custom_fonts/font = ExtResource( 1 )
+text = "-1"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="iconLife" type="TextureFrame" parent="Control/panelArriba/life 2"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 1168.0
+margin/top = -112.0
+margin/right = 1304.0
+margin/bottom = 24.0
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 5
+
+[node name="hi" type="Node" parent="Control/panelArriba"]
+
+[node name="infoScore" type="Label" parent="Control/panelArriba/hi"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 544.0
+margin/top = -64.0
+margin/right = 759.0
+margin/bottom = -24.0
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0.917969, 0.236664, 0.236664, 1 )
+text = "HI_SCORE:"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="score" type="Label" parent="Control/panelArriba/hi"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 736.0
+margin/top = -64.0
+margin/right = 951.0
+margin/bottom = -24.0
+custom_fonts/font = ExtResource( 1 )
+text = "00000"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="player" type="Node" parent="Control/panelArriba"]
+
+[node name="playerScore" type="Label" parent="Control/panelArriba/player"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = -64.0
+margin/top = -64.0
+margin/right = 96.0
+margin/bottom = -24.0
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0.0320435, 0.303011, 0.820313, 1 )
+text = "PLAYER:"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="playerScore1" type="Label" parent="Control/panelArriba/player"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 112.0
+margin/top = -64.0
+margin/right = 272.0
+margin/bottom = -24.0
+custom_fonts/font = ExtResource( 1 )
+text = "00000"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+

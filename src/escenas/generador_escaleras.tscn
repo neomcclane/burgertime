@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=1]
+
+[ext_resource path="res://src/scripts/generador_escalera.gd" type="Script" id=1]
+
+[node name="generador_escaleras" type="Area2D"]
+
+input/pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+script/script = ExtResource( 1 )
+filas = 4
+columnas = 2
+azul = true
+largo = 32
+ancho = 32
+arribaIzq = false
+arribaDer = false
+abajoIzq = false
+abajoDer = false
+ocultarShape = false
+pisoArriba = -1
+pisoAbajo = -1
+
+[node name="posicion" type="Position2D" parent="."]
+
+[node name="shape" type="CollisionShape2D" parent="."]
+
+trigger = false
+_update_shape_index = -1
+
+[connection signal="area_enter" from="." to="." method="_on_generador_escaleras_area_enter"]
+
+[connection signal="area_exit" from="." to="." method="_on_generador_escaleras_area_exit"]
+
+
