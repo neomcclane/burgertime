@@ -18,7 +18,7 @@ script/script = ExtResource( 1 )
 
 [node name="chef" parent="." instance=ExtResource( 3 )]
 
-transform/pos = Vector2( 432, 315 )
+transform/pos = Vector2( 105.695, 445.516 )
 
 [node name="mapa" type="TileMap" parent="."]
 
@@ -495,6 +495,6 @@ visibility/visible = false
 
 [node name="enemigo" parent="." instance=ExtResource( 9 )]
 
-transform/pos = Vector2( 1303, 16 )
+transform/pos = Vector2( 22.9501, 144.183 )
 
 

@@ -132,12 +132,14 @@ func generarCamino(posInicio, posFin, arreglo=[]):
 			f = h + 10
 			vAbierto.append([[pActual.x, pActual.y+1], f])
 		#arriba OJO
-		if pActual.x > 0 and matrizNivel[pActual.x-1][pActual.y].y != -2 and matrizNivel[pActual.x-1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x-1, pActual.y), vCerrado):
+		if pActual.x > 0 and matrizNivel[pActual.x][pActual.y].x != -1 and matrizNivel[pActual.x-1][pActual.y].y != -2 and matrizNivel[pActual.x-1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x-1, pActual.y), vCerrado):
+			print("arribaaa: ")
+			print(matrizNivel[pActual.x][pActual.y])
 			h = abs((pActual.x-1)-pFinal.x)+abs(pActual.y-pFinal.y) 
 			f = h + 10
 			vAbierto.append([[pActual.x-1, pActual.y], f])
 		#abajo OJO
-		if pActual.x < (FILAS-1) and matrizNivel[pActual.x+1][pActual.y].y != -2 and matrizNivel[pActual.x+1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x+1, pActual.y), vCerrado):
+		if pActual.x < (FILAS-1) and matrizNivel[pActual.x][pActual.y].x != -1 and matrizNivel[pActual.x+1][pActual.y].y != -2 and matrizNivel[pActual.x+1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x+1, pActual.y), vCerrado):
 			h = abs((pActual.x+1)-pFinal.x)+abs(pActual.y-pFinal.y) 
 			f = h + 10
 			vAbierto.append([[pActual.x+1, pActual.y], f])
@@ -246,21 +248,27 @@ func ejecutarBusqueda():
 	if global.LISTA_POSICIONES.size() > 0 and not is_processing():
 		buscando = true
 		posInicial = convertirPosicion(global.ACTUAL_ENEMIGO)
-		# if global.ACTUAL_ESCALERA.x == -1:
-		# 	posFinal = localizarPosicion(chef)
-		# else:
+		
 		var p = global.LISTA_POSICIONES[global.LISTA_POSICIONES.size()-1]
 		global.LISTA_POSICIONES.pop_front()
 		posFinal = convertirPosicion(p)
 		global.ACTUAL_ENEMIGO = p
 
-		# print("posFinal:")
-		# print(posFinal)
-
-		# print("posInicial: ")
-		# print(posInicial)
 		camino = generarCamino(posInicial, posFinal)
-		camino = limpiarCamino()
+		print(camino)
+		var aux = []
+		for elemento in camino:
+			aux.append(matrizNivel[elemento.x][elemento.y])
+		
+		print(aux)
+
+		aux = []
+		for elemento in camino:
+			if matrizNivel[elemento.x][elemento.y].x >= 0: 
+				aux.append(matrizNivel[elemento.x][elemento.y])
+		print(aux)
+
+		# camino = limpiarCamino()
 		camino = transformarCamino()
 		camino.invert()
 		set_process(true)

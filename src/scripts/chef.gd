@@ -197,16 +197,14 @@ func colisionesAbajo():
 				# estoy arriba
 				if centroEjeEscalera.y-diff > eje.get_global_pos().y:
 					global.LISTA_POSICIONES.append(Vector2(rayIzq.get_collider().posicion.get_global_pos().x, rayIzq.get_collider().posicion.get_global_pos().y - (rayIzq.get_collider().filas*rayIzq.get_collider().ancho)))
-					print(global.LISTA_POSICIONES)
 					marina.ejecutarBusqueda()
-
+					
 					arribaEscalera = true
 					dirMovimiento = [rayIzq.get_collider().arribaIzq, rayIzq.get_collider().arribaDer]
 					dirMovimientoAux= [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]
 				# estoy abajo
 				elif centroEjeEscalera.y-diff <= eje.get_global_pos().y:
 					global.LISTA_POSICIONES.append(rayIzq.get_collider().posicion.get_global_pos())
-					print(global.LISTA_POSICIONES)
 					marina.ejecutarBusqueda()
 					
 					abajoEscalera = true

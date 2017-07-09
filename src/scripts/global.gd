@@ -14,5 +14,5 @@ var EN_PAUSA_SALIR = false
 var MENU_OPCION = "start"
 
 var ACTUAL_ESCALERA = Vector2(-1, -1)
-var ACTUAL_ENEMIGO = Vector2(1280, 96)
+var ACTUAL_ENEMIGO = Vector2(0, 224)
 var LISTA_POSICIONES = []
