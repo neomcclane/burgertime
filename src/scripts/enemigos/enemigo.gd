@@ -97,15 +97,15 @@ func localizarPosicion(player):
 	return v[randi()%2+0]
 
 
-func existeElementoCamino(arreglo, elemento):
-	for token in arreglo:
-		if token.x == elemento.x and token.y == elemento.y:
+func existeAbierto(elemento, arreglo):
+	for i in range(arreglo.size()):
+		if arreglo[i][0].x == elemento.x and arreglo[i][0].y == elemento.y:
 			return true
 	return false
-
-func existeCerrado(posicion, arreglo):
-	for elemento in arreglo:
-		if elemento.x == posicion.x and elemento.y == posicion.y:
+	
+func existeCerrado(elemento, arreglo):
+	for token in arreglo:
+		if token.x == elemento.x and token.y == elemento.y:
 			return true
 	return false
 
@@ -118,51 +118,91 @@ func generarCamino(posInicio, posFin, arreglo=[]):
 	var vAbierto = []
 	var vCerrado = []
 	var vCamino = []
-	
+	var auxCamino = []
+
 	while pActual.x != pFinal.x or pActual.y != pFinal.y:
 		vCerrado.append(Vector2(pActual.x, pActual.y))
 		#izquierda
-		if pActual.y > 0 and matrizNivel[pActual.x][pActual.y-1].x != -2 and not existeCerrado(Vector2(pActual.x, pActual.y-1), vCerrado):
+		if pActual.y > 0 and matrizNivel[pActual.x][pActual.y-1].x != -2 and not existeCerrado(Vector2(pActual.x, pActual.y-1), vCerrado) and not existeAbierto(Vector2(pActual.x, pActual.y-1), vAbierto):
 			h = abs(pActual.x-pFinal.x)+abs((pActual.y-1)-pFinal.y) 
 			f = h + 10 
-			vAbierto.append([[pActual.x, pActual.y-1], f])
+			auxCamino.append([Vector2(pActual.x, pActual.y-1), f])
 		#derecha
-		if pActual.y < (COLUMNAS-1) and matrizNivel[pActual.x][pActual.y+1].x != -2 and not existeCerrado(Vector2(pActual.x, pActual.y+1), vCerrado):
+		if pActual.y < (COLUMNAS-1) and matrizNivel[pActual.x][pActual.y+1].x != -2 and not existeCerrado(Vector2(pActual.x, pActual.y+1), vCerrado) and not existeAbierto(Vector2(pActual.x, pActual.y+1), vAbierto):
 			h = abs(pActual.x-pFinal.x)+abs((pActual.y+1)-pFinal.y) 
 			f = h + 10
-			vAbierto.append([[pActual.x, pActual.y+1], f])
+			auxCamino.append([Vector2(pActual.x, pActual.y+1), f])
 		#arriba OJO
-		if pActual.x > 0 and matrizNivel[pActual.x][pActual.y].x != -1 and matrizNivel[pActual.x-1][pActual.y].y != -2 and matrizNivel[pActual.x-1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x-1, pActual.y), vCerrado):
-			print("arribaaa: ")
-			print(matrizNivel[pActual.x][pActual.y])
+		if pActual.x > 0 and matrizNivel[pActual.x][pActual.y].x != -1 and matrizNivel[pActual.x-1][pActual.y].y != -2 and matrizNivel[pActual.x-1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x-1, pActual.y), vCerrado) and not existeAbierto(Vector2(pActual.x-1, pActual.y), vAbierto):
 			h = abs((pActual.x-1)-pFinal.x)+abs(pActual.y-pFinal.y) 
 			f = h + 10
-			vAbierto.append([[pActual.x-1, pActual.y], f])
+			auxCamino.append([Vector2(pActual.x-1, pActual.y), f])
 		#abajo OJO
-		if pActual.x < (FILAS-1) and matrizNivel[pActual.x][pActual.y].x != -1 and matrizNivel[pActual.x+1][pActual.y].y != -2 and matrizNivel[pActual.x+1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x+1, pActual.y), vCerrado):
+		if pActual.x < (FILAS-1) and matrizNivel[pActual.x][pActual.y].x != -1 and matrizNivel[pActual.x+1][pActual.y].y != -2 and matrizNivel[pActual.x+1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x+1, pActual.y), vCerrado) and not existeAbierto(Vector2(pActual.x+1, pActual.y), vAbierto):
 			h = abs((pActual.x+1)-pFinal.x)+abs(pActual.y-pFinal.y) 
 			f = h + 10
-			vAbierto.append([[pActual.x+1, pActual.y], f])
+			auxCamino.append([Vector2(pActual.x+1, pActual.y), f])
 		
-		var c = 0
+		var c = 1000
 		var posEleminar = 0
-
+		var actualizar = false
+		
+		for i in range(auxCamino.size()):
+			if c > auxCamino[i][1]:
+				c = auxCamino[i][1]
+				posEleminar = i
+		
 		for i in range(vAbierto.size()):
-			if i == 0:
+			if c > vAbierto[i][1]:
 				c = vAbierto[i][1]
 				posEleminar = i
-			else:
-				if c > vAbierto[i][1]:
-					c = vAbierto[i][1]
-					posEleminar = i
-		
-		vCamino.append(Vector2(pActual.x, pActual.y))
+				actualizar = true
 
-		if vAbierto.size() > 0:
-			pActual = Vector2(vAbierto[posEleminar][0][0], vAbierto[posEleminar][0][1])
+		vCamino.append(pActual)
+		
+		if not actualizar:
+			pActual = auxCamino[posEleminar][0]
+			auxCamino.remove(posEleminar)
+		else:
+			pActual = vAbierto[posEleminar][0]
 			vAbierto.remove(posEleminar)
-	
-	vCamino.append(Vector2(pActual.x, pActual.y))
+			# examinar elemento continuos
+			var lista = []
+			var bandera = false
+			var i = vCamino.size()-1
+			print(vCamino)
+			print("i--> "+str(i))
+			
+			while not bandera:
+				#izquierda
+				if vCamino[i].y == pActual.y-1 and vCamino[i].x == pActual.x:
+					bandera = true
+				# derecha
+				elif vCamino[i].y == pActual.y+1 and vCamino[i].x == pActual.x:
+					bandera = true
+				# arriba
+				elif vCamino[i].x == pActual.x-1 and vCamino[i].y == pActual.y:
+					bandera = true
+				# abajo
+				elif vCamino[i].x == pActual.x+1 and vCamino[i].y == pActual.y:
+					bandera = true
+				
+				if not bandera:
+					lista.append(i)
+					if (i-1) > 0:
+						i -= 1
+					else:
+						bandera = true
+			
+			for pos in lista:
+				vCamino.remove(pos)
+		
+		for elemento in auxCamino:
+			vAbierto.append(elemento)
+
+		auxCamino = []
+
+	vCamino.append(pActual)
 
 	return vCamino
 
@@ -202,39 +242,7 @@ func _process(delta):
 
 
 
-func limpiarCamino():
-	
-	var i = camino.size()-1
-	var cont = 0
-	var salida = false
 
-	while not salida and is_processing():
-		#izquierda
-		if camino[i-1].y != camino[i].y or camino[i-1].x != camino[i].x-1:
-			cont += 1
-		
-		#derecha
-		if camino[i-1].y != camino[i].y or camino[i-1].x != camino[i].x+1:
-			cont += 1
-		
-		#arriba
-		if camino[i-1].y != camino[i].y-1 or camino[i-1].x != camino[i].x:
-			cont += 1
-		
-		#abajo
-		if camino[i-1].y != camino[i].y+1 or camino[i-1].x != camino[i].x:
-			cont += 1
-		
-		if cont == 4:
-			camino.remove(i-1)
-		else:
-			i -= 1
-		
-		cont = 0
-		if i <= 0:
-			salida = true
-	
-	return camino
 
 func transformarCamino():
 	var v = []
@@ -256,19 +264,12 @@ func ejecutarBusqueda():
 
 		camino = generarCamino(posInicial, posFinal)
 		print(camino)
+		
 		var aux = []
 		for elemento in camino:
 			aux.append(matrizNivel[elemento.x][elemento.y])
-		
 		print(aux)
 
-		aux = []
-		for elemento in camino:
-			if matrizNivel[elemento.x][elemento.y].x >= 0: 
-				aux.append(matrizNivel[elemento.x][elemento.y])
-		print(aux)
-
-		# camino = limpiarCamino()
 		camino = transformarCamino()
 		camino.invert()
 		set_process(true)
