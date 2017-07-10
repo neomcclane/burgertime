@@ -5,7 +5,7 @@ onready var animaciones = get_node("animaciones")
 onready var rayIzq = get_node("rayIzq")
 onready var rayDer = get_node("rayDer")
 onready var eje = get_node("eje")
-onready var marina = get_parent().get_node("enemigo")
+onready var veronica = get_parent().get_node("veronica")
 
 var anima0 = ""
 var anima1 = ""
@@ -45,7 +45,7 @@ var animaQuieto = ["animaEscaleraQuietoIzq", "animaEscaleraQuietoDer"]
 var animaQuietoAux = ""
 
 func _ready():
-	print("enemigo--> "+marina.get_name())
+	print("enemigo--> "+veronica.get_name())
 	set_z(100)
 	rayIzq.add_exception(self)
 	rayDer.add_exception(self)
@@ -197,7 +197,7 @@ func colisionesAbajo():
 				# estoy arriba
 				if centroEjeEscalera.y-diff > eje.get_global_pos().y:
 					global.LISTA_POSICIONES.append(Vector2(rayIzq.get_collider().posicion.get_global_pos().x, rayIzq.get_collider().posicion.get_global_pos().y - (rayIzq.get_collider().filas*rayIzq.get_collider().ancho)))
-					marina.ejecutarBusqueda()
+					veronica.ejecutarBusqueda()
 					
 					arribaEscalera = true
 					dirMovimiento = [rayIzq.get_collider().arribaIzq, rayIzq.get_collider().arribaDer]
@@ -205,7 +205,7 @@ func colisionesAbajo():
 				# estoy abajo
 				elif centroEjeEscalera.y-diff <= eje.get_global_pos().y:
 					global.LISTA_POSICIONES.append(rayIzq.get_collider().posicion.get_global_pos())
-					marina.ejecutarBusqueda()
+					veronica.ejecutarBusqueda()
 					
 					abajoEscalera = true
 					dirMovimiento = [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]

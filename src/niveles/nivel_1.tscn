@@ -8,7 +8,7 @@
 [ext_resource path="res://src/escenas/generador_escaleras.tscn" type="PackedScene" id=6]
 [ext_resource path="res://src/escenas/GUI/pausa.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/escenas/GUI/exit.tscn" type="PackedScene" id=8]
-[ext_resource path="res://src/escenas/enemigos/enemigo.tscn" type="PackedScene" id=9]
+[ext_resource path="res://src/escenas/enemigos/veronica.tscn" type="PackedScene" id=9]
 
 [node name="nivel_1" type="Node2D"]
 
@@ -493,8 +493,8 @@ visibility/visible = false
 
 visibility/visible = false
 
-[node name="enemigo" parent="." instance=ExtResource( 9 )]
+[node name="veronica" parent="." instance=ExtResource( 9 )]
 
-transform/pos = Vector2( 31.3186, 912.19 )
+transform/pos = Vector2( 22.0126, 911.631 )
 
 
