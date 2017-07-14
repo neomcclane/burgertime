@@ -246,20 +246,16 @@ func movimientoFinal():
 	var diff = 5
 	#arriba
 	if global.ACTUAL_ENEMIGO.y > chef.eje.get_global_pos().y+diff:
-		print("mv arriba")
 		hallarPunto(0)
 	
 	#abajo
 	elif global.ACTUAL_ENEMIGO.y < chef.eje.get_global_pos().y-diff:
-		print("mv abajo")
 		hallarPunto(1)
 	#izquierda
 	elif global.ACTUAL_ENEMIGO.x > chef.eje.get_global_pos().x:
-		print("mv izquierda")
 		hallarPunto(2)
 	#derecha
 	elif global.ACTUAL_ENEMIGO.x < chef.eje.get_global_pos().x:
-		print("mv derecha")
 		hallarPunto(3)
 
 func hallarPunto(tipo):
@@ -269,20 +265,17 @@ func hallarPunto(tipo):
 	if tipo == 0:
 		for i in range(1, FILAS):
 			if (p[0]-i) >= 0 and matrizNivel[p[0]-i][p[1]].x >= 0:
-				print("entra izq: "+str(matrizNivel[p[0]-i][p[1]].x))
 				p1 = Vector2(p[0]-i, p[1])
 				break
 	# busqueda por la abajo
 	elif tipo == 1:
 		for i in range(1, FILAS):
 			if (p[0]+i) < FILAS and matrizNivel[p[0]+i][p[1]].x >= 0:
-				print("entra izq: "+str(matrizNivel[p[0]+i][p[1]].x))
 				p1 = Vector2(p[0]+i, p[1])
 				break
 	elif tipo == 2:
 		for i in range(1, COLUMNAS):
 			if (p[1]-i) >= 0 and matrizNivel[p[0]][p[1]-i].x >= 0:
-				print("entra izq: "+str(matrizNivel[p[0]][p[1]-i].x))
 				p1 = Vector2(p[0], p[1]-i)
 				break
 
@@ -290,7 +283,6 @@ func hallarPunto(tipo):
 	elif tipo == 3:
 		for i in range(1, COLUMNAS):
 			if (p[1]+i < COLUMNAS) and matrizNivel[p[0]][p[1]+i].x >= 0:
-				print("entra der: "+str(matrizNivel[p[0]][p[1]+i].x))				
 				p1 = Vector2(p[0], p[1]+i)
 				break
 	if p1 != null:
@@ -326,7 +318,7 @@ func ejecutarBusqueda():
 		set_process(true)
 	
 func _ready():
-	set_z(99)
+	set_z(100)
 	crearMatrizNivel1()
 	inicializarEscaleras()
 	generarMatriz()

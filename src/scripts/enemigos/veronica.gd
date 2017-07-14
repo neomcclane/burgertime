@@ -6,7 +6,7 @@ onready var rayIzq = get_node("rayIzq")
 onready var rayDer = get_node("rayIzq")
 onready var animacion = get_node("animacion")
 
-var VELOCIDAD = 150
+var VELOCIDAD = 140
 
 var escaleras = {}
 var chef = null
@@ -28,7 +28,6 @@ var buscando = false
 var direcionAnima = 0
 var anima0 = ""
 var anima1 = anima0
-
 
 func inicializarEscaleras():
 	if get_parent().get_node("escaleras") != null:
@@ -253,6 +252,7 @@ func _process(delta):
 			else:
 				camino[camino.size()-1] = ptInicio.linear_interpolate(ptFin, andar/distancia)
 				andar = 0
+		
 		#izquierda
 		if get_pos().x > (camino[camino.size()-1].x +32):
 			direcionAnima = 1
@@ -262,16 +262,16 @@ func _process(delta):
 			direcionAnima = 0
 		
 		#arriba
-		elif get_pos().y > (camino[camino.size()-1].y-80):
+		elif get_pos().y > (camino[camino.size()-1].y-90):
 			direcionAnima = 2
 		
 		#abajo
-		elif get_pos().y < (camino[camino.size()-1].y-80):
+		elif get_pos().y < (camino[camino.size()-1].y-90):
 			direcionAnima = 3
 
 		animacion()
-		set_pos(Vector2(camino[camino.size()-1].x +32, camino[camino.size()-1].y-80))
-
+		set_pos(Vector2(camino[camino.size()-1].x +32, camino[camino.size()-1].y-90))
+		
 		if camino.size() < 2:
 			camino = []
 			set_process(false)
@@ -292,7 +292,6 @@ func movimientoFinal():
 	#arriba
 	if global.ACTUAL_VERONICA.y > chef.eje.get_global_pos().y+diff:
 		hallarPunto(0)
-	
 	#abajo
 	elif global.ACTUAL_VERONICA.y < chef.eje.get_global_pos().y-diff:
 		hallarPunto(1)
@@ -310,20 +309,17 @@ func hallarPunto(tipo):
 	if tipo == 0:
 		for i in range(1, FILAS):
 			if (p[0]-i) >= 0 and matrizNivel[p[0]-i][p[1]].x >= 0:
-				print("entra izq: "+str(matrizNivel[p[0]-i][p[1]].x))
 				p1 = Vector2(p[0]-i, p[1])
 				break
 	# busqueda por la abajo
 	elif tipo == 1:
 		for i in range(1, FILAS):
 			if (p[0]+i) < FILAS and matrizNivel[p[0]+i][p[1]].x >= 0:
-				print("entra izq: "+str(matrizNivel[p[0]+i][p[1]].x))
 				p1 = Vector2(p[0]+i, p[1])
 				break
 	elif tipo == 2:
 		for i in range(1, COLUMNAS):
 			if (p[1]-i) >= 0 and matrizNivel[p[0]][p[1]-i].x >= 0:
-				print("entra izq: "+str(matrizNivel[p[0]][p[1]-i].x))
 				p1 = Vector2(p[0], p[1]-i)
 				break
 
@@ -331,7 +327,6 @@ func hallarPunto(tipo):
 	elif tipo == 3:
 		for i in range(1, COLUMNAS):
 			if (p[1]+i < COLUMNAS) and matrizNivel[p[0]][p[1]+i].x >= 0:
-				print("entra der: "+str(matrizNivel[p[0]][p[1]+i].x))				
 				p1 = Vector2(p[0], p[1]+i)
 				break
 	if p1 != null:
@@ -365,9 +360,10 @@ func ejecutarBusqueda():
 		camino = transformarCamino()
 		camino.invert()
 		set_process(true)
-	
+
 func _ready():
-	set_z(99)
+	self.queue_free()
+	set_z(100)
 	crearMatrizNivel1()
 	inicializarEscaleras()
 	generarMatriz()

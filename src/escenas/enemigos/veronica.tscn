@@ -44,7 +44,7 @@ tracks/0/keys = {
 
 [node name="veronica" type="Area2D"]
 
-transform/scale = Vector2( 5, 5 )
+transform/scale = Vector2( 5.5, 5.5 )
 input/pickable = true
 shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0.0794434, 8.65922 )

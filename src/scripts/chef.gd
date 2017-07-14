@@ -44,9 +44,19 @@ var limiteSuperiorEscalera = false
 var animaQuieto = ["animaEscaleraQuietoIzq", "animaEscaleraQuietoDer"]
 var animaQuietoAux = ""
 
+var banderaCambio = false
+
 func _ready():
-	print("enemigo--> "+veronica.get_name())
 	set_z(100)
+	if get_parent().get_node("alimentos"):
+		for alimento in get_parent().get_node("alimentos").get_children():
+			rayIzq.add_exception(alimento)
+			rayDer.add_exception(alimento)
+			for elemento in alimento.get_children():
+				rayIzq.add_exception(elemento)
+				rayDer.add_exception(elemento)
+				
+	add_to_group("player")
 	rayIzq.add_exception(self)
 	rayDer.add_exception(self)
 	set_fixed_process(true)
@@ -69,7 +79,6 @@ func _fixed_process(delta):
 	colisionesAbajo()
 	
 func movimiento(delta):
-	# print(eje.get_global_pos().y)
 	anima1 = anima0
 	posActual = get_pos()
 
@@ -130,7 +139,6 @@ func movimiento(delta):
 		bajarEscaleraNormal = false
 		dirMovimiento = dirMovimientoAux
 		limiteInferiorEscalera = true
-#		print("limite abajo!")
 		
 	elif limites.x < eje.get_global_pos().y and subirEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
 		direccion = Vector2(0, -1)
@@ -140,18 +148,15 @@ func movimiento(delta):
 		
 	#limite superior
 	elif limites.x >= eje.get_global_pos().y and subirEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
-#		print("limite arriba!")
 		movHorizontal = true
 		direccion.y = 0
 		dirMovimiento = dirMovimientoAux
 		limiteSuperiorEscalera = true
 		
 	elif not limiteSuperiorEscalera and limites.x+diff >= eje.get_global_pos().y and sobreEscalera:
-#		print("limite arriba estatic!")
 		limiteSuperiorEscalera = true
 		
 	elif not  limiteInferiorEscalera and limites.y-diff <= eje.get_global_pos().y and sobreEscalera:
-#		print("limite abajo estatic!")
 		limiteInferiorEscalera = true
 		
 
@@ -159,21 +164,22 @@ func movimiento(delta):
 		direccion.y = 0
 	#------------------------------------------
 	
-	if (limiteInferiorEscalera or limiteSuperiorEscalera) and direccion.x == 0:
+	if banderaCambio and (limiteInferiorEscalera or limiteSuperiorEscalera) and direccion.x == 0:
 		anima0 = "animaEscaleraIdle"
-		
-	elif movHorizontal and direccion.x != 0:
-		anima0 = "caminar"
-		
-	elif (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y != 0:
+	
+	elif banderaCambio and (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y != 0:
 		anima0 = "animaEscalera"
-		
-	elif (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y == 0:
+	
+	elif banderaCambio and (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y == 0:
 		if animaQuietoAux != anima0:
 			randomize()
 			anima0 = animaQuieto[randi()%2+0]
 			animaQuietoAux = anima0
-	else:
+
+	elif not banderaCambio and movHorizontal and direccion.x != 0:
+		anima0 = "caminar"
+	
+	elif not banderaCambio:
 		anima0 = "idle"
 		
 	
@@ -189,6 +195,7 @@ func colisionesAbajo():
 	if rayIzq.is_colliding() and rayDer.is_colliding():
 		if rayIzq.get_collider().is_in_group("escaleras") and rayDer.get_collider().is_in_group("escaleras"):
 			if not sobreEscalera and not existeEscaleraExcepcion(rayIzq.get_collider()) and not existeEscaleraColision(rayIzq.get_collider()):
+				banderaCambio = true
 				sobreEscalera = true
 				limites.x = rayIzq.get_collider().limiteSuperior
 				limites.y = rayIzq.get_collider().limiteInferior 
@@ -196,16 +203,18 @@ func colisionesAbajo():
 				
 				# estoy arriba
 				if centroEjeEscalera.y-diff > eje.get_global_pos().y:
-					global.LISTA_POSICIONES.append(Vector2(rayIzq.get_collider().posicion.get_global_pos().x, rayIzq.get_collider().posicion.get_global_pos().y - (rayIzq.get_collider().filas*rayIzq.get_collider().ancho)))
-					veronica.ejecutarBusqueda()
+					if veronica != null:
+						global.LISTA_POSICIONES.append(Vector2(rayIzq.get_collider().posicion.get_global_pos().x, rayIzq.get_collider().posicion.get_global_pos().y - (rayIzq.get_collider().filas*rayIzq.get_collider().ancho)))
+						# veronica.ejecutarBusqueda()
 					
 					arribaEscalera = true
 					dirMovimiento = [rayIzq.get_collider().arribaIzq, rayIzq.get_collider().arribaDer]
 					dirMovimientoAux= [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]
 				# estoy abajo
 				elif centroEjeEscalera.y-diff <= eje.get_global_pos().y:
-					global.LISTA_POSICIONES.append(rayIzq.get_collider().posicion.get_global_pos())
-					veronica.ejecutarBusqueda()
+					if veronica != null:
+						global.LISTA_POSICIONES.append(rayIzq.get_collider().posicion.get_global_pos())
+						# veronica.ejecutarBusqueda()
 					
 					abajoEscalera = true
 					dirMovimiento = [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]
@@ -222,14 +231,12 @@ func colisionesAbajo():
 				vectorEscaleraColision.append(rayIzq.get_collider())
 				# estoy arriba
 				if centroEjeEscalera.y-diff > eje.get_global_pos().y:
-					# print("estoy arriba en: "+rayIzq.get_collider().get_name())
 					arribaEscalera = true
 					dirMovimiento = [rayIzq.get_collider().arribaIzq, rayIzq.get_collider().arribaDer]
 					dirMovimientoAux= [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]
 				# estoy abajo
 			
 				elif centroEjeEscalera.y-diff <= eje.get_global_pos().y:
-					# print("estoy abajo en: "+rayIzq.get_collider().get_name())
 					abajoEscalera = true
 					dirMovimiento = [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]
 					dirMovimientoAux= [rayIzq.get_collider().arribaIzq, rayIzq.get_collider().arribaDer]
@@ -245,6 +252,8 @@ func colisionesAbajo():
 			vectorEscaleraExcepcion.clear()
 			evaluarEscaleraAbajo = false
 			resetearVariablesActualizarSuelo()
+		else:
+			banderaCambio = false
 
 func resetearVariablesActualizarSuelo():
 	sobreEscalera = false
@@ -263,9 +272,9 @@ func resetearVariablesActualizarSuelo():
 	vectorEscaleraColision.clear()
 
 func resetearVariables():
+	sobreEscalera = false
 	limiteSuperiorEscalera = false
 	limiteInferiorEscalera = false
-	sobreEscalera = false
 	arribaEscalera = false
 	abajoEscalera = false 
 	dirMovimiento = [true, true]
@@ -279,7 +288,6 @@ func resetearVariables():
 		rayDer.remove_exception(vectorEscaleraExcepcion[0])
 	vectorEscaleraExcepcion.clear()
 	vectorEscaleraColision.clear()
-#	print("afuera!")
 
 func agregarEscaleraExcepcion(obj):
 	var resultado = false
