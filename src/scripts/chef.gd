@@ -205,7 +205,7 @@ func colisionesAbajo():
 				if centroEjeEscalera.y-diff > eje.get_global_pos().y:
 					if veronica != null:
 						global.LISTA_POSICIONES.append(Vector2(rayIzq.get_collider().posicion.get_global_pos().x, rayIzq.get_collider().posicion.get_global_pos().y - (rayIzq.get_collider().filas*rayIzq.get_collider().ancho)))
-						veronica.ejecutarBusqueda()
+#						veronica.ejecutarBusqueda()
 					
 					arribaEscalera = true
 					dirMovimiento = [rayIzq.get_collider().arribaIzq, rayIzq.get_collider().arribaDer]
@@ -214,7 +214,7 @@ func colisionesAbajo():
 				elif centroEjeEscalera.y-diff <= eje.get_global_pos().y:
 					if veronica != null:
 						global.LISTA_POSICIONES.append(rayIzq.get_collider().posicion.get_global_pos())
-						veronica.ejecutarBusqueda()
+#						veronica.ejecutarBusqueda()
 					
 					abajoEscalera = true
 					dirMovimiento = [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]

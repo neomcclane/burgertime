@@ -19,6 +19,8 @@ gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
 script/script = ExtResource( 1 )
+hambArriba = true
+hambAbajo = false
 
 [node name="eje" type="Position2D" parent="."]
 
@@ -29,6 +31,18 @@ transform/scale = Vector2( 1, 1.10769 )
 shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
+
+[node name="ray" type="RayCast2D" parent="."]
+
+transform/pos = Vector2( 0, -4 )
+transform/rot = 180.0
+transform/scale = Vector2( 0.1, 0.1 )
+enabled = true
+cast_to = Vector2( 0, 50 )
+layer_mask = 1
+type_mask = 16
+
+[connection signal="area_enter" from="." to="." method="_on_alimento_area_enter"]
 
 [connection signal="body_enter" from="." to="." method="_on_alimento_body_enter"]
 

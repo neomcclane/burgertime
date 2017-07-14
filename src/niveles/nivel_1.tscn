@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=1]
+[gd_scene load_steps=12 format=1]
 
 [ext_resource path="res://src/scripts/nivel_1.gd" type="Script" id=1]
 [ext_resource path="res://src/escenas/GUI/barraInfo.tscn" type="PackedScene" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://src/escenas/alimento.tscn" type="PackedScene" id=8]
 [ext_resource path="res://src/escenas/chef.tscn" type="PackedScene" id=9]
 [ext_resource path="res://src/escenas/enemigos/veronica.tscn" type="PackedScene" id=10]
+[ext_resource path="res://src/escenas/paleta.tscn" type="PackedScene" id=11]
 
 [node name="nivel_1" type="Node2D"]
 
@@ -484,7 +485,6 @@ drag_margin/bottom = 0.2
 [node name="pausa" parent="." instance=ExtResource( 6 )]
 
 process/pause_mode = 2
-visibility/visible = false
 
 [node name="exit" parent="." instance=ExtResource( 7 )]
 
@@ -492,13 +492,21 @@ visibility/visible = false
 
 [node name="alimentos" type="Node" parent="."]
 
+editor/display_folded = true
+
 [node name="alimento" parent="alimentos" instance=ExtResource( 8 )]
 
-transform/pos = Vector2( 186.468, 96.7579 )
+transform/pos = Vector2( 190, 90 )
+
+[node name="alimento2" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 190, 220 )
+hambArriba = false
+hambAbajo = true
 
 [node name="alimento1" parent="alimentos" instance=ExtResource( 8 )]
 
-transform/pos = Vector2( 515.638, 94.2789 )
+transform/pos = Vector2( 510, 90 )
 
 [node name="chef" parent="." instance=ExtResource( 9 )]
 
@@ -507,5 +515,21 @@ transform/pos = Vector2( 533.071, 822.743 )
 [node name="veronica" parent="." instance=ExtResource( 10 )]
 
 transform/pos = Vector2( 22.0126, 901.631 )
+
+[node name="paleta" parent="." instance=ExtResource( 11 )]
+
+transform/pos = Vector2( 190, 1210 )
+
+[node name="paleta1" parent="." instance=ExtResource( 11 )]
+
+transform/pos = Vector2( 510, 1210 )
+
+[node name="paleta2" parent="." instance=ExtResource( 11 )]
+
+transform/pos = Vector2( 830, 1210 )
+
+[node name="paleta3" parent="." instance=ExtResource( 11 )]
+
+transform/pos = Vector2( 1150, 1210 )
 
 
