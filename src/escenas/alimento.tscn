@@ -5,7 +5,7 @@
 [sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
-extents = Vector2( 13, 3.25 )
+extents = Vector2( 13, 2.77778 )
 
 [node name="alimento" type="Area2D"]
 

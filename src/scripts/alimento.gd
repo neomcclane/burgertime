@@ -5,7 +5,7 @@ onready var eje = get_node("eje")
 var bajar = false
 
 func _ready():
-	set_z(100)
+	set_z(99)
 	inicializar()
 	set_process(true)
 	

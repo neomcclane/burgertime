@@ -362,7 +362,7 @@ func ejecutarBusqueda():
 		set_process(true)
 
 func _ready():
-	self.queue_free()
+#	self.queue_free()
 	set_z(100)
 	crearMatrizNivel1()
 	inicializarEscaleras()
