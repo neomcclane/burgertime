@@ -9,6 +9,7 @@ var largo = 32
 var diff = 1
 var abajo = false
 
+
 func _ready():
 	add_to_group("elemento")
 	sprite.set_region_rect(Rect2(Vector2(posX, posY), Vector2(ancho, largo)))

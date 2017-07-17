@@ -2,8 +2,6 @@ extends Area2D
 
 onready var sprite = get_node("sprite")
 onready var eje = get_node("eje")
-onready var rayIzq = get_node("rayIzq")
-onready var rayDer = get_node("rayIzq")
 onready var animacion = get_node("animacion")
 
 var VELOCIDAD = 140
@@ -270,7 +268,7 @@ func _process(delta):
 			direcionAnima = 3
 
 		animacion()
-		set_pos(Vector2(camino[camino.size()-1].x +32, camino[camino.size()-1].y-90))
+		set_pos(Vector2(camino[camino.size()-1].x +32, camino[camino.size()-1].y-45))
 		
 		if camino.size() < 2:
 			camino = []
@@ -362,7 +360,7 @@ func ejecutarBusqueda():
 		set_process(true)
 
 func _ready():
-	# self.queue_free()
+	self.queue_free()
 	set_z(100)
 	crearMatrizNivel1()
 	inicializarEscaleras()

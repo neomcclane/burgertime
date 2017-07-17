@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=1]
+[gd_scene load_steps=11 format=1]
 
 [ext_resource path="res://src/scripts/chef.gd" type="Script" id=1]
 [ext_resource path="res://src/sprites/chef.png" type="Texture" id=2]
+[ext_resource path="res://src/escenas/pimienta.tscn" type="PackedScene" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -22,7 +23,7 @@ tracks/0/keys = {
 "times": FloatArray( 0, 0.2, 0.4 ),
 "transitions": FloatArray( 1, 1, 1 ),
 "update": 1,
-"values": [ Rect2( 107, 49, 10, 15 ), Rect2( 75, 49, 10, 15 ), Rect2( 107, 49, 10, 15 ) ]
+"values": [ Rect2( 107, 48, 10, 16 ), Rect2( 75, 48, 10, 16 ), Rect2( 107, 48, 10, 16 ) ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -39,7 +40,7 @@ tracks/0/keys = {
 "times": FloatArray( 0, 1 ),
 "transitions": FloatArray( 1, 1 ),
 "update": 1,
-"values": [ Rect2( 43, 49, 10, 15 ), Rect2( 43, 49, 10, 15 ) ]
+"values": [ Rect2( 43, 48, 10, 16 ), Rect2( 43, 48, 10, 16 ) ]
 }
 
 [sub_resource type="Animation" id=4]
@@ -56,7 +57,7 @@ tracks/0/keys = {
 "times": FloatArray( 0, 1 ),
 "transitions": FloatArray( 1, 1 ),
 "update": 1,
-"values": [ Rect2( 75, 49, 10, 15 ), Rect2( 0, 0, 0, 0 ) ]
+"values": [ Rect2( 75, 48, 10, 16 ), Rect2( 75, 48, 10, 16 ) ]
 }
 
 [sub_resource type="Animation" id=5]
@@ -73,7 +74,7 @@ tracks/0/keys = {
 "times": FloatArray( 0, 1 ),
 "transitions": FloatArray( 1, 1 ),
 "update": 1,
-"values": [ Rect2( 107, 49, 10, 15 ), Rect2( 107, 49, 10, 15 ) ]
+"values": [ Rect2( 107, 48, 10, 16 ), Rect2( 107, 48, 10, 16 ) ]
 }
 
 [sub_resource type="Animation" id=6]
@@ -89,7 +90,7 @@ tracks/0/keys = {
 "times": FloatArray( 0, 0.2, 0.4 ),
 "transitions": FloatArray( 1, 1, 1 ),
 "update": 1,
-"values": [ Rect2( 106, 17, 10, 15 ), Rect2( 76, 17, 7, 15 ), Rect2( 106, 17, 10, 15 ) ]
+"values": [ Rect2( 107, 16, 9, 16 ), Rect2( 76, 16, 8, 16 ), Rect2( 107, 16, 9, 16 ) ]
 }
 
 [sub_resource type="Animation" id=7]
@@ -105,7 +106,7 @@ tracks/0/keys = {
 "times": FloatArray( 0, 1 ),
 "transitions": FloatArray( 1, 1 ),
 "update": 1,
-"values": [ Rect2( 43, 17, 9, 15 ), Rect2( 43, 17, 9, 15 ) ]
+"values": [ Rect2( 43, 16, 9, 16 ), Rect2( 43, 16, 9, 16 ) ]
 }
 
 [node name="chef" type="Area2D"]
@@ -120,12 +121,13 @@ gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
 script/script = ExtResource( 1 )
+verEjesParticulas = false
 
 [node name="sprite" type="Sprite" parent="."]
 
 texture = ExtResource( 2 )
 region = true
-region_rect = Rect2( 43, 49, 10, 15 )
+region_rect = Rect2( 107, 16, 9, 16 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -177,6 +179,12 @@ type_mask = 16
 
 [node name="eje" type="Position2D" parent="."]
 
-transform/pos = Vector2( 0, 7.4 )
+transform/pos = Vector2( 0, 7.94545 )
+
+[node name="eje_particulas" type="Position2D" parent="."]
+
+transform/pos = Vector2( 8, 0 )
+
+[node name="pimienta" parent="." instance=ExtResource( 3 )]
 
 

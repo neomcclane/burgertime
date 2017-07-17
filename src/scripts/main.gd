@@ -49,7 +49,7 @@ func _input(event):
 			if opciones["start"]:
 #				get_tree().change_scene("res://src/niveles/intermedio.tscn")
 				global.MENU_OPCION = "start"
-				get_tree().change_scene("res://src/niveles/nivel_1.tscn")
+				get_tree().change_scene("res://src/niveles/ready.tscn")
 			elif opciones["instruction"]:
 				global.MENU_OPCION = "instruction"
 				get_tree().change_scene("res://src/niveles/instrucciones.tscn")

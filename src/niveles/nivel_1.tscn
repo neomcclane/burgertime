@@ -9,7 +9,7 @@
 [ext_resource path="res://src/escenas/GUI/exit.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/escenas/alimento.tscn" type="PackedScene" id=8]
 [ext_resource path="res://src/escenas/chef.tscn" type="PackedScene" id=9]
-[ext_resource path="res://src/escenas/enemigos/veronica.tscn" type="PackedScene" id=10]
+[ext_resource path="res://src/escenas/enemigos/pepino.tscn" type="PackedScene" id=10]
 [ext_resource path="res://src/escenas/paleta.tscn" type="PackedScene" id=11]
 
 [node name="nivel_1" type="Node2D"]
@@ -490,17 +490,42 @@ process/pause_mode = 2
 
 visibility/visible = false
 
-[node name="alimentos" type="Node" parent="."]
+[node name="alimentos" type="Node2D" parent="."]
 
 editor/display_folded = true
+visibility/visible = false
 
 [node name="alimento" parent="alimentos" instance=ExtResource( 8 )]
 
-transform/pos = Vector2( 190, 90 )
+transform/pos = Vector2( 190, 220 )
+
+[node name="alimento4" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 190, 480 )
+hambArriba = false
+lechuga = true
+
+[node name="alimento5" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 190, 860 )
+hambArriba = false
+carne = true
+
+[node name="alimento13" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 830, 610 )
+hambArriba = false
+carne = true
+
+[node name="alimento15" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 1150, 480 )
+hambArriba = false
+carne = true
 
 [node name="alimento2" parent="alimentos" instance=ExtResource( 8 )]
 
-transform/pos = Vector2( 190, 220 )
+transform/pos = Vector2( 190, 990 )
 hambArriba = false
 hambAbajo = true
 
@@ -508,13 +533,63 @@ hambAbajo = true
 
 transform/pos = Vector2( 510, 90 )
 
+[node name="alimento8" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 830, 90 )
+
+[node name="alimento9" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 1150, 90 )
+
+[node name="alimento6" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 510, 610 )
+hambArriba = false
+lechuga = true
+
+[node name="alimento12" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 830, 220 )
+hambArriba = false
+lechuga = true
+
+[node name="alimento14" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 1150, 220 )
+hambArriba = false
+lechuga = true
+
+[node name="alimento7" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 510, 860 )
+hambArriba = false
+carne = true
+
+[node name="alimento3" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 510, 990 )
+hambArriba = false
+hambAbajo = true
+
+[node name="alimento10" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 830, 990 )
+hambArriba = false
+hambAbajo = true
+
+[node name="alimento11" parent="alimentos" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 1150, 730 )
+hambArriba = false
+hambAbajo = true
+
 [node name="chef" parent="." instance=ExtResource( 9 )]
 
-transform/pos = Vector2( 533.071, 822.743 )
+transform/pos = Vector2( 120, 50 )
 
-[node name="veronica" parent="." instance=ExtResource( 10 )]
+[node name="pepino" parent="." instance=ExtResource( 10 )]
 
-transform/pos = Vector2( 22.0126, 901.631 )
+transform/pos = Vector2( 560, 820 )
 
 [node name="paleta" parent="." instance=ExtResource( 11 )]
 

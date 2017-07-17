@@ -5,8 +5,12 @@ onready var animaciones = get_node("animaciones")
 onready var rayIzq = get_node("rayIzq")
 onready var rayDer = get_node("rayDer")
 onready var eje = get_node("eje")
-onready var veronica = get_parent().get_node("veronica")
+onready var eje_particulas = get_node("eje_particulas")
+onready var pimienta = get_node("pimienta").get_node("particulas")
 
+export var verEjesParticulas = false
+
+var enemigos = []
 var anima0 = ""
 var anima1 = ""
 var izquierda = true
@@ -45,8 +49,23 @@ var animaQuieto = ["animaEscaleraQuietoIzq", "animaEscaleraQuietoDer"]
 var animaQuietoAux = ""
 
 var banderaCambio = false
+var diffPimienta = 8
+
+func _draw():
+	if verEjesParticulas:
+		draw_line(Vector2(eje_particulas.get_pos().x, eje_particulas.get_pos().y+10), Vector2(eje_particulas.get_pos().x, eje_particulas.get_pos().y-10), Color(0, 1, 0, 1))
+		draw_line(Vector2(eje_particulas.get_pos().x+10, eje_particulas.get_pos().y), Vector2(eje_particulas.get_pos().x-10, eje_particulas.get_pos().y), Color(1, 0, 0, 1))
 
 func _ready():
+	# enemigos.append(get_parent().get_node("pepino"))
+	pimienta.set_z(150)
+	if izquierda:
+		eje_particulas.set_pos(Vector2(-8, 0))
+	else:
+		eje_particulas.set_pos(Vector2(8, 0))
+	pimienta.set_pos(eje_particulas.get_pos())
+	update()	
+
 	set_z(100)
 	if get_parent().get_node("alimentos"):
 		for alimento in get_parent().get_node("alimentos").get_children():
@@ -72,7 +91,24 @@ func _input(event):
 			resetearVariablesActualizarSuelo()
 		elif limiteSuperiorEscalera and event.scancode == KEY_UP and not event.pressed: # == false
 			resetearVariablesActualizarSuelo()
-			
+		elif global.NUM_PIMIENTA > 0 and not pimienta.is_emitting() and event.scancode == KEY_SPACE and not event.pressed:
+			global.NUM_PIMIENTA -= 1
+			pimienta.set_pos(eje_particulas.get_pos())
+			# arriba
+			if eje_particulas.get_pos().x == 0 and eje_particulas.get_pos().y == -diffPimienta:
+				pimienta.set_param(0, 90)
+			# abajo
+			elif eje_particulas.get_pos().x == 0 and eje_particulas.get_pos().y == diffPimienta:
+				pimienta.set_param(0, 270)
+			# izquierda
+			elif eje_particulas.get_pos().y == 0 and eje_particulas.get_pos().x == -diffPimienta:
+				pimienta.set_param(0, 180)
+			# derecha
+			elif eje_particulas.get_pos().y == 0 and eje_particulas.get_pos().x == diffPimienta:
+				pimienta.set_param(0, 0)
+				
+			pimienta.set_emitting(true)
+
 func _fixed_process(delta):
 	movimiento(delta)
 	animacion()
@@ -85,10 +121,23 @@ func movimiento(delta):
 	if movHorizontal and dirMovimiento[0] and Input.is_action_pressed("tecla_izq"):
 		izquierda = true
 		direccion = Vector2(-1, 0)
-		
+		eje_particulas.set_pos(Vector2(-diffPimienta, 0))
+		update()
+	
 	elif movHorizontal and dirMovimiento[1] and Input.is_action_pressed("tecla_der"):
 		izquierda = false
 		direccion = Vector2(1, 0)
+		eje_particulas.set_pos(Vector2(diffPimienta, 0))
+		update()
+	
+	elif eje_particulas.get_pos().y != diffPimienta and Input.is_action_pressed("tecla_abajo"):
+		eje_particulas.set_pos(Vector2(0, diffPimienta))
+		update()
+	
+	elif eje_particulas.get_pos().y != -diffPimienta and Input.is_action_pressed("tecla_arriba"):
+		eje_particulas.set_pos(Vector2(0, -diffPimienta))
+		update()
+	
 	else:
 		direccion.x = 0
 
@@ -115,15 +164,14 @@ func movimiento(delta):
 	elif bajarEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
 		bajarEscaleraNormal = false
 		subirEscaleraNormal = true
-	
+
 	elif subirEscaleraNormal and Input.is_action_pressed("tecla_abajo"):
 		bajarEscaleraNormal = true
 		subirEscaleraNormal = false
-	
+
 	elif bajarEscaleraDoble and Input.is_action_pressed("tecla_arriba"):
 		bajarEscaleraDoble = false
 		subirEscaleraNormal = true
-
 	
 	if limites.y > eje.get_global_pos().y and (bajarEscaleraDoble or bajarEscaleraNormal) and Input.is_action_pressed("tecla_abajo"):
 		direccion = Vector2(0, 1)
@@ -203,18 +251,20 @@ func colisionesAbajo():
 				
 				# estoy arriba
 				if centroEjeEscalera.y-diff > eje.get_global_pos().y:
-					if veronica != null:
+					if enemigos.size() > 0:
 						global.LISTA_POSICIONES.append(Vector2(rayIzq.get_collider().posicion.get_global_pos().x, rayIzq.get_collider().posicion.get_global_pos().y - (rayIzq.get_collider().filas*rayIzq.get_collider().ancho)))
-#						veronica.ejecutarBusqueda()
+						for n in enemigos:
+							n.ejecutarBusqueda()
 					
 					arribaEscalera = true
 					dirMovimiento = [rayIzq.get_collider().arribaIzq, rayIzq.get_collider().arribaDer]
 					dirMovimientoAux= [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]
 				# estoy abajo
 				elif centroEjeEscalera.y-diff <= eje.get_global_pos().y:
-					if veronica != null:
+					if enemigos.size() > 0:
 						global.LISTA_POSICIONES.append(rayIzq.get_collider().posicion.get_global_pos())
-#						veronica.ejecutarBusqueda()
+						for n in enemigos:
+							n.ejecutarBusqueda()
 					
 					abajoEscalera = true
 					dirMovimiento = [rayIzq.get_collider().abajoIzq, rayIzq.get_collider().abajoDer]

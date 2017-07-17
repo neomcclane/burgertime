@@ -5,7 +5,8 @@ var MOV_ESCALERA = false
 var SUBIR = false
 var BAJAR = false
 
-var VIDAS = 3
+var NUM_VIDA = 4
+var NUM_PIMIENTA = 4
 var ESCENA_ACTUAL = ""
 var ESCENA_ANTERIOR = ""
 var EN_PAUSA = false
