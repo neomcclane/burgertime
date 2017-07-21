@@ -6,7 +6,7 @@ onready var rayIzq = get_node("rayIzq")
 onready var rayDer = get_node("rayDer")
 onready var eje = get_node("eje")
 onready var eje_particulas = get_node("eje_particulas")
-onready var pimienta = get_node("pimienta").get_node("particulas")
+onready var pimienta = get_node("pimienta")
 
 export var verEjesParticulas = false
 
@@ -50,6 +50,11 @@ var animaQuietoAux = ""
 
 var banderaCambio = false
 var diffPimienta = 8
+var emitiendo = false
+var tiempoEmitiendo = 0
+
+var muerte = false
+var tiempoMuerte = 0
 
 func _draw():
 	if verEjesParticulas:
@@ -57,7 +62,8 @@ func _draw():
 		draw_line(Vector2(eje_particulas.get_pos().x+10, eje_particulas.get_pos().y), Vector2(eje_particulas.get_pos().x-10, eje_particulas.get_pos().y), Color(1, 0, 0, 1))
 
 func _ready():
-	# enemigos.append(get_parent().get_node("pepino"))
+	for ene in get_parent().get_node("enemigos").get_children():
+		enemigos.append(ene)
 	pimienta.set_z(150)
 	if izquierda:
 		eje_particulas.set_pos(Vector2(-8, 0))
@@ -82,7 +88,7 @@ func _ready():
 	set_process_input(true)
 
 func _input(event):
-	if event.type == InputEvent.KEY:
+	if not muerte and event.type == InputEvent.KEY:
 		if limiteInferiorEscalera and event.scancode == KEY_UP and event.pressed:
 			resetearVariablesActualizarSuelo()
 		elif limiteInferiorEscalera and event.scancode == KEY_DOWN and not event.pressed: # == false
@@ -91,60 +97,81 @@ func _input(event):
 			resetearVariablesActualizarSuelo()
 		elif limiteSuperiorEscalera and event.scancode == KEY_UP and not event.pressed: # == false
 			resetearVariablesActualizarSuelo()
-		elif global.NUM_PIMIENTA > 0 and not pimienta.is_emitting() and event.scancode == KEY_SPACE and not event.pressed:
+		elif not emitiendo and global.NUM_PIMIENTA > 0 and not pimienta.get_node("particulas").is_emitting() and event.scancode == KEY_SPACE and not event.pressed:
 			global.NUM_PIMIENTA -= 1
-			pimienta.set_pos(eje_particulas.get_pos())
+			emitiendo = true
 			# arriba
 			if eje_particulas.get_pos().x == 0 and eje_particulas.get_pos().y == -diffPimienta:
-				pimienta.set_param(0, 90)
+				pimienta.get_node("particulas").set_param(0, 90)
 			# abajo
 			elif eje_particulas.get_pos().x == 0 and eje_particulas.get_pos().y == diffPimienta:
-				pimienta.set_param(0, 270)
+				pimienta.get_node("particulas").set_param(0, 270)
 			# izquierda
 			elif eje_particulas.get_pos().y == 0 and eje_particulas.get_pos().x == -diffPimienta:
-				pimienta.set_param(0, 180)
+				pimienta.get_node("particulas").set_param(0, 180)
 			# derecha
 			elif eje_particulas.get_pos().y == 0 and eje_particulas.get_pos().x == diffPimienta:
-				pimienta.set_param(0, 0)
+				pimienta.get_node("particulas").set_param(0, 0)
 				
-			pimienta.set_emitting(true)
+			pimienta.get_node("particulas").set_emitting(true)
 
 func _fixed_process(delta):
-	movimiento(delta)
+	if not pimienta.get_node("particulas").is_emitting():
+		movimiento(delta)
 	animacion()
 	colisionesAbajo()
+
+	if emitiendo and not global.EMITIENDO_PIMIENTA and tiempoEmitiendo > 0.4:
+		emitiendo = false
+		tiempoEmitiendo = 0
+	elif emitiendo and global.EMITIENDO_PIMIENTA and tiempoEmitiendo <= 0.4:
+		tiempoEmitiendo += 1*delta
+
+	if global.EMITIENDO_PIMIENTA != pimienta.get_node("particulas").is_emitting():
+		global.EMITIENDO_PIMIENTA = pimienta.get_node("particulas").is_emitting()
+
+	if muerte and tiempoMuerte > 0.4:
+		if global.NUM_VIDA > 0:
+				global.NUM_VIDA -= 1
+				get_tree().change_scene("res://src/niveles/ready.tscn")
+		else:
+			global.GAME_OVER = true
+			get_tree().change_scene("res://src/niveles/ready.tscn")
+	elif muerte and tiempoMuerte <= 0.4:
+		tiempoMuerte += 1*delta
 	
 func movimiento(delta):
 	anima1 = anima0
 	posActual = get_pos()
 
-	if movHorizontal and dirMovimiento[0] and Input.is_action_pressed("tecla_izq"):
+	if not muerte and movHorizontal and dirMovimiento[0] and Input.is_action_pressed("tecla_izq"):
 		izquierda = true
 		direccion = Vector2(-1, 0)
 		eje_particulas.set_pos(Vector2(-diffPimienta, 0))
 		update()
 	
-	elif movHorizontal and dirMovimiento[1] and Input.is_action_pressed("tecla_der"):
+	elif not muerte and movHorizontal and dirMovimiento[1] and Input.is_action_pressed("tecla_der"):
 		izquierda = false
 		direccion = Vector2(1, 0)
 		eje_particulas.set_pos(Vector2(diffPimienta, 0))
 		update()
 	
-	elif eje_particulas.get_pos().y != diffPimienta and Input.is_action_pressed("tecla_abajo"):
+	elif not muerte and eje_particulas.get_pos().y != diffPimienta and Input.is_action_pressed("tecla_abajo"):
 		eje_particulas.set_pos(Vector2(0, diffPimienta))
 		update()
 	
-	elif eje_particulas.get_pos().y != -diffPimienta and Input.is_action_pressed("tecla_arriba"):
+	elif not muerte and eje_particulas.get_pos().y != -diffPimienta and Input.is_action_pressed("tecla_arriba"):
 		eje_particulas.set_pos(Vector2(0, -diffPimienta))
 		update()
 	
 	else:
 		direccion.x = 0
+	pimienta.set_pos(eje_particulas.get_pos())
 
 	#------------------------------------------
 	#****************************************************
 	#****************************************************
-	if abajoEscalera and vectorEscaleraColision.size() > 0 and Input.is_action_pressed("tecla_abajo"):
+	if not muerte and abajoEscalera and vectorEscaleraColision.size() > 0 and Input.is_action_pressed("tecla_abajo"):
 		for elemento in vectorEscaleraColision:
 			vectorEscaleraExcepcion.append(elemento)
 		vectorEscaleraColision.clear()
@@ -155,25 +182,25 @@ func movimiento(delta):
 	#****************************************************
 	#****************************************************
 	
-	elif abajoEscalera and  vectorEscaleraColision.size() > 0 and Input.is_action_pressed("tecla_arriba"):
+	elif not muerte and abajoEscalera and  vectorEscaleraColision.size() > 0 and Input.is_action_pressed("tecla_arriba"):
 		subirEscaleraNormal = true
 	
-	elif arribaEscalera and not bajarEscaleraNormal and not teclaAbajoEscaleraNormal and vectorEscaleraColision.size() > 0 and Input.is_action_pressed("tecla_abajo"):
+	elif not muerte and arribaEscalera and not bajarEscaleraNormal and not teclaAbajoEscaleraNormal and vectorEscaleraColision.size() > 0 and Input.is_action_pressed("tecla_abajo"):
 		bajarEscaleraNormal = true
 	
-	elif bajarEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
+	elif not muerte and bajarEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
 		bajarEscaleraNormal = false
 		subirEscaleraNormal = true
 
-	elif subirEscaleraNormal and Input.is_action_pressed("tecla_abajo"):
+	elif not muerte and subirEscaleraNormal and Input.is_action_pressed("tecla_abajo"):
 		bajarEscaleraNormal = true
 		subirEscaleraNormal = false
 
-	elif bajarEscaleraDoble and Input.is_action_pressed("tecla_arriba"):
+	elif not muerte and bajarEscaleraDoble and Input.is_action_pressed("tecla_arriba"):
 		bajarEscaleraDoble = false
 		subirEscaleraNormal = true
 	
-	if limites.y > eje.get_global_pos().y and (bajarEscaleraDoble or bajarEscaleraNormal) and Input.is_action_pressed("tecla_abajo"):
+	if not muerte and limites.y > eje.get_global_pos().y and (bajarEscaleraDoble or bajarEscaleraNormal) and Input.is_action_pressed("tecla_abajo"):
 		direccion = Vector2(0, 1)
 		movHorizontal = false
 		arribaEscalera = false
@@ -181,21 +208,21 @@ func movimiento(delta):
 		limiteSuperiorEscalera = false
 		
 	#limite inferior
-	elif limites.y <= eje.get_global_pos().y and (bajarEscaleraDoble or bajarEscaleraNormal) and Input.is_action_pressed("tecla_abajo"):
+	elif not muerte and limites.y <= eje.get_global_pos().y and (bajarEscaleraDoble or bajarEscaleraNormal) and Input.is_action_pressed("tecla_abajo"):
 		direccion.y = 0
 		movHorizontal = true
 		bajarEscaleraNormal = false
 		dirMovimiento = dirMovimientoAux
 		limiteInferiorEscalera = true
 		
-	elif limites.x < eje.get_global_pos().y and subirEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
+	elif not muerte and limites.x < eje.get_global_pos().y and subirEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
 		direccion = Vector2(0, -1)
 		movHorizontal = false
 		limiteInferiorEscalera = false
 		limiteSuperiorEscalera = false
 		
 	#limite superior
-	elif limites.x >= eje.get_global_pos().y and subirEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
+	elif not muerte and limites.x >= eje.get_global_pos().y and subirEscaleraNormal and Input.is_action_pressed("tecla_arriba"):
 		movHorizontal = true
 		direccion.y = 0
 		dirMovimiento = dirMovimientoAux
@@ -212,32 +239,34 @@ func movimiento(delta):
 		direccion.y = 0
 	#------------------------------------------
 	
-	if banderaCambio and (limiteInferiorEscalera or limiteSuperiorEscalera) and direccion.x == 0:
+	if not muerte and banderaCambio and (limiteInferiorEscalera or limiteSuperiorEscalera) and direccion.x == 0:
 		anima0 = "animaEscaleraIdle"
 	
-	elif banderaCambio and (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y != 0:
+	elif not muerte and banderaCambio and (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y != 0:
 		anima0 = "animaEscalera"
 	
-	elif banderaCambio and (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y == 0:
+	elif not muerte and banderaCambio and (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y == 0:
 		if animaQuietoAux != anima0:
 			randomize()
 			anima0 = animaQuieto[randi()%2+0]
 			animaQuietoAux = anima0
 
-	elif not banderaCambio and movHorizontal and direccion.x != 0:
+	elif not muerte and not banderaCambio and movHorizontal and direccion.x != 0:
 		anima0 = "caminar"
 	
-	elif not banderaCambio:
+	elif not muerte and not banderaCambio:
 		anima0 = "idle"
-		
 	
+
 	var posFinal = posActual+(direccion*global.VELOCIDAD*delta)
 	set_pos(posFinal)
 	
 func animacion():
 	sprite.set_flip_h(izquierda)
+	
 	if anima1 != anima0:
 		animaciones.play(anima0)
+
 
 func colisionesAbajo():
 	if rayIzq.is_colliding() and rayDer.is_colliding():
@@ -361,3 +390,14 @@ func existeEscaleraColision(obj):
 			resultado = true
 			break	
 	return resultado
+
+func _on_chef_area_enter( area ):
+	if area.is_in_group("enemigos") and not area.detenido:
+		# if area.eje.get_global_pos().y == eje.get_global_pos().y:
+		muerte = true
+		if not muerte and banderaCambio and (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y == 0:
+			anima0 = animaQuieto[randi()%2+0]
+		else:
+			anima0 = "idle"
+		animacion()
+		

@@ -1,0 +1,133 @@
+[gd_scene load_steps=7 format=1]
+
+[ext_resource path="res://src/scripts/lol.gd" type="Script" id=1]
+[ext_resource path="res://blueprint/emily.jpg" type="Texture" id=2]
+[ext_resource path="res://src/sprites/blanco.png" type="Texture" id=3]
+[ext_resource path="res://src/sprites/marco.png" type="Texture" id=4]
+
+[sub_resource type="CanvasItemShader" id=1]
+
+_code = {
+"fragment": "uniform color co = vec4(0, 0, 0, 1);
+color col = vec4(co.r, co.g, co.b, 0.3);
+
+vec2 curvatura(vec2 tam) {
+	float relacion = tam.y/tam.x;
+	float arco = atan2(tam.y, tam.x);
+	float distancia = length(tam);
+	distancia = pow(distancia, 1.05);
+	
+	tam.x = distancia * cos(arco);
+	tam.y = distancia * sin(arco);
+	
+	return 0.5*(tam+vec2(1.0, 1.0));
+}
+
+vec4 asignarColor(vec2 tam, color col) {
+	float posX = 1/800*2.3;
+	float posY = 1/600*2.3;
+	
+	vec4 colActual = vec4(texscreen(tam), 1);
+	vec4 colIzq = vec4(texscreen(tam - vec2(posX, posY)), 1);
+	
+	colActual = colActual*vec4(1.2, 0.5, 1-1.2, 0.2);
+	colIzq = colIzq*vec4(1-1.2, 0.5, 1.2, 0.2);
+	
+	return colActual+colIzq+col;
+}
+
+vec2 tam = 2 * SCREEN_UV;
+tam.x = tam.x -1;
+tam.y = tam.y -1;
+
+float d = length(tam);
+if(d < 1.5) {
+	tam = curvatura(tam);
+} else {
+	tam = SCREEN_UV;
+}
+
+vec4 lineas(vec2 uv, vec4 c) {
+	float line_row = floor((uv.y * 600/3) + mod(TIME*1.2, 1.3));
+
+	float n = 1.0 - ceil((mod(line_row,1.3)/1.3));
+
+	c = c - n*c*(1 - 0.9);
+	c.a = 1;
+	return c;
+}
+
+vec4 colFinal = asignarColor(tam, col);
+COLOR = lineas(tam, colFinal);",
+"fragment_ofs": 0,
+"light": "",
+"light_ofs": 0,
+"vertex": "",
+"vertex_ofs": 0
+}
+
+[sub_resource type="CanvasItemMaterial" id=2]
+
+shader/shader = SubResource( 1 )
+shader/shading_mode = 0
+shader_param/co = Color( 0.0426178, 0.519531, 0.0612472, 1 )
+
+[node name="prueba" type="Panel"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 800.0
+margin/bottom = 600.0
+script/script = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Viewport" type="Viewport" parent="."]
+
+rect = Rect2( 0, 0, 800, 600 )
+own_world = false
+world = null
+transparent_bg = false
+render_target/enabled = false
+render_target/v_flip = false
+render_target/clear_on_new_frame = true
+render_target/filter = false
+render_target/gen_mipmaps = false
+render_target/update_mode = 2
+audio_listener/enable_2d = false
+audio_listener/enable_3d = false
+physics/object_picking = false
+gui/disable_input = false
+
+[node name="Sprite" type="Sprite" parent="Viewport"]
+
+transform/pos = Vector2( 400, 300 )
+texture = ExtResource( 2 )
+
+[node name="shader" type="TextureFrame" parent="."]
+
+material/material = SubResource( 2 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 801.0
+margin/bottom = 599.0
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 0
+
+[node name="Sprite 2" type="Sprite" parent="."]
+
+transform/pos = Vector2( 398.797, 301.607 )
+transform/scale = Vector2( 0.74, 0.74 )
+texture = ExtResource( 4 )
+
+

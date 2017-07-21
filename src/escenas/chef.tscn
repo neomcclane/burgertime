@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=1]
+[gd_scene load_steps=12 format=1]
 
 [ext_resource path="res://src/scripts/chef.gd" type="Script" id=1]
 [ext_resource path="res://src/sprites/chef.png" type="Texture" id=2]
@@ -7,7 +7,7 @@
 [sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
-extents = Vector2( 4.6, 10 )
+extents = Vector2( 3.53064, 4.68056 )
 
 [sub_resource type="Animation" id=2]
 
@@ -109,12 +109,29 @@ tracks/0/keys = {
 "values": [ Rect2( 43, 16, 9, 16 ), Rect2( 43, 16, 9, 16 ) ]
 }
 
+[sub_resource type="Animation" id=8]
+
+resource/name = "muerte"
+length = 1.0
+loop = true
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:region_rect")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 0.3 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ Rect2( 12, 81, 8, 15 ), Rect2( 44, 81, 8, 15 ) ]
+}
+
 [node name="chef" type="Area2D"]
 
 transform/scale = Vector2( 5.5, 5.5 )
 input/pickable = true
 shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Matrix32( 1, 0, 0, 0.930769, 0, -0.9 )
+shapes/0/transform = Matrix32( 1, 0, 0, 0.930769, 0, 0.736365 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
@@ -127,7 +144,7 @@ verEjesParticulas = false
 
 texture = ExtResource( 2 )
 region = true
-region_rect = Rect2( 107, 16, 9, 16 )
+region_rect = Rect2( 44, 81, 8, 15 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -143,21 +160,19 @@ anims/animaEscaleraQuietoDer = SubResource( 4 )
 anims/animaEscaleraQuietoIzq = SubResource( 5 )
 anims/caminar = SubResource( 6 )
 anims/idle = SubResource( 7 )
+anims/muerte = SubResource( 8 )
 playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
-autoplay = ""
+autoplay = "muerte"
 
 [node name="shape" type="CollisionShape2D" parent="."]
 
-transform/pos = Vector2( 0, -0.9 )
+transform/pos = Vector2( 0, 0.736365 )
 transform/scale = Vector2( 1, 0.930769 )
 shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="rayIzq" type="RayCast2D" parent="."]
 
@@ -186,5 +201,7 @@ transform/pos = Vector2( 0, 7.94545 )
 transform/pos = Vector2( 8, 0 )
 
 [node name="pimienta" parent="." instance=ExtResource( 3 )]
+
+[connection signal="area_enter" from="." to="." method="_on_chef_area_enter"]
 
 

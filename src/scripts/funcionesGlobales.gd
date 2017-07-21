@@ -33,3 +33,8 @@ func _input(event):
 		elif global.EN_PAUSA and event.scancode == KEY_ESCAPE and event.pressed and get_tree().is_paused() and expr.find(global.ESCENA_ACTUAL) == 0:
 			get_tree().set_pause(false)
 			global.EN_PAUSA = false
+			
+func reiniciarVariables():
+	global.NUM_VIDA = global.SAL_NUM_VIDA
+	global.NUM_PIMIENTA = global.SAL_NUM_PIMIENTA
+	global.GAME_OVER = false

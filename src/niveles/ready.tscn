@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=1]
+[gd_scene load_steps=5 format=1]
 
 [ext_resource path="res://src/scripts/ready.gd" type="Script" id=1]
-[ext_resource path="res://src/fonts/5mikropix_20.fnt" type="BitmapFont" id=2]
+[ext_resource path="res://src/fonts/5mikropix_40.fnt" type="BitmapFont" id=2]
+[ext_resource path="res://src/fonts/5mikropix_20.fnt" type="BitmapFont" id=3]
 
 [sub_resource type="StyleBoxFlat" id=1]
 
@@ -57,13 +58,13 @@ focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 70.0
-margin/top = 50.0
-margin/right = -70.0
-margin/bottom = 16.0
+margin/left = 85.0
+margin/top = 47.0
+margin/right = -85.0
+margin/bottom = 7.0
 custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.0313726, 0.301961, 0.819608, 1 )
-text = "PLAYER"
+text = "PLAYER 1"
 align = 1
 valign = 1
 percent_visible = 1.0
@@ -81,11 +82,11 @@ focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
 margin/left = 70.0
-margin/top = 20.0
+margin/top = 15.0
 margin/right = -70.0
-margin/bottom = -14.0
-custom_fonts/font = ExtResource( 2 )
-custom_colors/font_color = Color( 0.0313726, 0.301961, 0.819608, 1 )
+margin/bottom = -19.0
+custom_fonts/font = ExtResource( 3 )
+custom_colors/font_color = Color( 0.886719, 0.886719, 0.886719, 1 )
 text = "READY"
 align = 1
 valign = 1

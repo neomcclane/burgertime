@@ -1,5 +1,7 @@
 extends Area2D
 
+export var vecInicial = Vector2()
+
 onready var sprite = get_node("sprite")
 onready var eje = get_node("eje")
 onready var animacion = get_node("animacion")
@@ -12,7 +14,6 @@ var enEscena = false
 var pisoActual = 0
 var posX = 0
 var posY = 0
-var sobreEscaleras = false
 var matrizNivel = []
 var FILAS = 8
 var COLUMNAS = 17
@@ -27,11 +28,18 @@ var direcionAnima = 0
 var anima0 = ""
 var anima1 = anima0
 
+var avanzar = true
+
+var detenido = false
+var tiempoDetenido = 0
+var tiempoDetenidoMax = 5.0
+
+
 func inicializarEscaleras():
-	if get_parent().get_node("escaleras") != null:
+	if get_parent().get_parent().get_node("escaleras") != null:
 		enEscena = true
-		chef = get_parent().get_node("chef")
-		var nodoEscaleras = get_parent().get_node("escaleras")
+		chef = get_parent().get_parent().get_node("chef")
+		var nodoEscaleras = get_parent().get_parent().get_node("escaleras")
 		for nodo in nodoEscaleras.get_children():
 			var clave = int(nodo.get_name())
 			escaleras[clave] = []
@@ -217,27 +225,32 @@ func convertirPosicion(posicion):
 
 func animacion():
 	anima1 = anima0
-	#derecha
-	if direcionAnima == 0:
-		sprite.set_flip_h(false)
-		anima0 = "caminar"
-	#izquierda
-	elif direcionAnima == 1:
-		sprite.set_flip_h(true)
-		anima0 = "caminar"
-	#arriba
-	elif direcionAnima == 2:
-		anima0 = "escaleras"
-	#abajo
-	elif direcionAnima == 3:
-		anima0 = "escaleras"
-		
+	if avanzar:
+		#derecha
+		if direcionAnima == 0:
+			sprite.set_flip_h(false)
+			anima0 = "caminar"
+		#izquierda
+		elif direcionAnima == 1:
+			sprite.set_flip_h(true)
+			anima0 = "caminar"
+		#arriba
+		elif direcionAnima == 2:
+			anima0 = "escaleras"
+		#abajo
+		elif direcionAnima == 3:
+			anima0 = "escaleras"	
+	else:
+		if direcionAnima > 1:
+			anima0 = "idleEscalera"
+		else:
+			anima0 = "idle"
+	
 	if anima0 != anima1:
 		animacion.play(anima0)
 
 func _process(delta):
-	
-	if camino.size() >1:
+	if avanzar and camino.size() >1:
 		var andar = delta*VELOCIDAD
 		while andar > 0 and camino.size() >= 2:
 			
@@ -277,7 +290,7 @@ func _process(delta):
 				ejecutarBusqueda()
 			else:
 				movimientoFinal()
-	else:
+	elif avanzar:
 		camino = []
 		set_process(false)
 		if global.LISTA_POSICIONES.size()> 0:
@@ -288,20 +301,20 @@ func _process(delta):
 func movimientoFinal():
 	var diff = 10
 	#arriba
-	if global.ACTUAL_VERONICA.y > chef.eje.get_global_pos().y+diff:
+	if vecInicial.y > chef.eje.get_global_pos().y+diff:
 		hallarPunto(0)
 	#abajo
-	elif global.ACTUAL_VERONICA.y < chef.eje.get_global_pos().y-diff:
+	elif vecInicial.y < chef.eje.get_global_pos().y-diff:
 		hallarPunto(1)
 	#izquierda
-	elif global.ACTUAL_VERONICA.x > chef.eje.get_global_pos().x:
+	elif vecInicial.x > chef.eje.get_global_pos().x:
 		hallarPunto(2)
 	#derecha
-	elif global.ACTUAL_VERONICA.x < chef.eje.get_global_pos().x:
+	elif vecInicial.x < chef.eje.get_global_pos().x:
 		hallarPunto(3)
 
 func hallarPunto(tipo):
-	var p = convertirPosicion(global.ACTUAL_VERONICA)
+	var p = convertirPosicion(vecInicial)
 	var p1 = null
 	# busqueda por la arriba
 	if tipo == 0:
@@ -342,12 +355,12 @@ func transformarCamino():
 func ejecutarBusqueda():
 	if global.LISTA_POSICIONES.size() > 0 and not is_processing():
 		buscando = true
-		posInicial = convertirPosicion(global.ACTUAL_VERONICA)
+		posInicial = convertirPosicion(vecInicial)
 		
 		var p = global.LISTA_POSICIONES[global.LISTA_POSICIONES.size()-1]
 		global.LISTA_POSICIONES.pop_front()
 		posFinal = convertirPosicion(p)
-		global.ACTUAL_VERONICA = p
+		vecInicial = p
 		
 		camino = generarCamino(posInicial, posFinal)
 		
@@ -361,6 +374,7 @@ func ejecutarBusqueda():
 
 func _ready():
 #	self.queue_free()
+	add_to_group("enemigos")
 	set_z(100)
 	crearMatrizNivel1()
 	inicializarEscaleras()
@@ -368,3 +382,29 @@ func _ready():
 	var pos = localizarPosicion(chef)
 	global.LISTA_POSICIONES.append(Vector2(matrizNivel[pos.x][pos.y].x, matrizNivel[pos.x][pos.y].y))
 	ejecutarBusqueda()
+	set_fixed_process(true)
+	
+func _fixed_process(delta):
+	if detenido and tiempoDetenido > tiempoDetenidoMax:
+		tiempoDetenido = 0
+		detenido = false
+		avanzar = true
+		if global.LISTA_POSICIONES.size()> 0:
+				ejecutarBusqueda()
+		else:
+			movimientoFinal()
+
+	elif detenido and tiempoDetenido <= tiempoDetenidoMax:
+		tiempoDetenido += 1*delta
+
+
+func _on_salchiha_area_enter( area ):
+	if area.get_name() == "chef":
+		avanzar = false
+		animacion()
+		
+	elif area.is_in_group("pimienta") and global.EMITIENDO_PIMIENTA:
+		detenido = true
+		avanzar = false
+		animacion()
+	

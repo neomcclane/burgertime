@@ -5,12 +5,16 @@ var MOV_ESCALERA = false
 var SUBIR = false
 var BAJAR = false
 
-var NUM_VIDA = 4
-var NUM_PIMIENTA = 4
+var NUM_VIDA = 0
+var SAL_NUM_VIDA = NUM_VIDA
+var NUM_PIMIENTA = 40
+var SAL_NUM_PIMIENTA = NUM_PIMIENTA
+var GAME_OVER = false
 var ESCENA_ACTUAL = ""
 var ESCENA_ANTERIOR = ""
 var EN_PAUSA = false
 var EN_PAUSA_SALIR = false
+var EMITIENDO_PIMIENTA = false
 
 var MENU_OPCION = "start"
 

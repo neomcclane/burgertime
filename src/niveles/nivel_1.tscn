@@ -9,8 +9,8 @@
 [ext_resource path="res://src/escenas/GUI/exit.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/escenas/alimento.tscn" type="PackedScene" id=8]
 [ext_resource path="res://src/escenas/chef.tscn" type="PackedScene" id=9]
-[ext_resource path="res://src/escenas/enemigos/pepino.tscn" type="PackedScene" id=10]
-[ext_resource path="res://src/escenas/paleta.tscn" type="PackedScene" id=11]
+[ext_resource path="res://src/escenas/paleta.tscn" type="PackedScene" id=10]
+[ext_resource path="res://src/escenas/enemigos/salchicha.tscn" type="PackedScene" id=11]
 
 [node name="nivel_1" type="Node2D"]
 
@@ -85,6 +85,8 @@ editor/display_folded = true
 
 [node name="1" type="Node" parent="escaleras"]
 
+editor/display_folded = true
+
 [node name="0" parent="escaleras/1" instance=ExtResource( 5 )]
 
 transform/pos = Vector2( 0, 224 )
@@ -149,6 +151,8 @@ pisoAbajo = 1
 
 [node name="2" type="Node" parent="escaleras"]
 
+editor/display_folded = true
+
 [node name="4" parent="escaleras/2" instance=ExtResource( 5 )]
 
 transform/pos = Vector2( 320, 352 )
@@ -182,6 +186,8 @@ pisoArriba = 1
 pisoAbajo = 2
 
 [node name="3" type="Node" parent="escaleras"]
+
+editor/display_folded = true
 
 [node name="1" type="Node" parent="escaleras/3"]
 
@@ -314,6 +320,8 @@ pisoAbajo = 5
 
 [node name="6" type="Node" parent="escaleras"]
 
+editor/display_folded = true
+
 [node name="0" parent="escaleras/6" instance=ExtResource( 5 )]
 
 transform/pos = Vector2( 0, 864 )
@@ -381,6 +389,8 @@ pisoArriba = 5
 pisoAbajo = 6
 
 [node name="7" type="Node" parent="escaleras"]
+
+editor/display_folded = true
 
 [node name="0" parent="escaleras/7" instance=ExtResource( 5 )]
 
@@ -468,7 +478,7 @@ transform/pos = Vector2( 672, 608 )
 anchor_mode = 1
 rotating = false
 current = true
-zoom = Vector2( 2.4, 2.3 )
+zoom = Vector2( 2.1, 2.6 )
 limit/left = -10000000
 limit/top = -10000000
 limit/right = 10000000
@@ -493,7 +503,6 @@ visibility/visible = false
 [node name="alimentos" type="Node2D" parent="."]
 
 editor/display_folded = true
-visibility/visible = false
 
 [node name="alimento" parent="alimentos" instance=ExtResource( 8 )]
 
@@ -585,26 +594,29 @@ hambAbajo = true
 
 [node name="chef" parent="." instance=ExtResource( 9 )]
 
-transform/pos = Vector2( 120, 50 )
+transform/pos = Vector2( 670, 948 )
 
-[node name="pepino" parent="." instance=ExtResource( 10 )]
-
-transform/pos = Vector2( 560, 820 )
-
-[node name="paleta" parent="." instance=ExtResource( 11 )]
+[node name="paleta" parent="." instance=ExtResource( 10 )]
 
 transform/pos = Vector2( 190, 1210 )
 
-[node name="paleta1" parent="." instance=ExtResource( 11 )]
+[node name="paleta1" parent="." instance=ExtResource( 10 )]
 
 transform/pos = Vector2( 510, 1210 )
 
-[node name="paleta2" parent="." instance=ExtResource( 11 )]
+[node name="paleta2" parent="." instance=ExtResource( 10 )]
 
 transform/pos = Vector2( 830, 1210 )
 
-[node name="paleta3" parent="." instance=ExtResource( 11 )]
+[node name="paleta3" parent="." instance=ExtResource( 10 )]
 
 transform/pos = Vector2( 1150, 1210 )
+
+[node name="enemigos" type="Node" parent="."]
+
+[node name="salchiha" parent="enemigos" instance=ExtResource( 11 )]
+
+transform/pos = Vector2( 220, 820 )
+vecInicial = Vector2( 0, 992 )
 
 
