@@ -1,12 +1,15 @@
 extends Node2D
 
-onready var label = get_node("label")
-onready var camara = get_node("../camara")
+onready var label = get_node("Control/label")
+onready var panel = get_node("Control/panel")
+onready var camara = null
 
 func _ready():
 	set_z(200)
-	var view = get_viewport_rect().size
-	label.set_pos(Vector2(view.x/2+100,view.y))
+	panel.set_pos(Vector2(-97, 0))
+	panel.set_size(Vector2(1538, 1312))
+	camara = get_owner().get_node("camara")
+	label.set_pos(Vector2(camara.get_camera_screen_center().x-125, camara.get_camera_screen_center().y))
 	self.hide()
 	set_process(true)
 	

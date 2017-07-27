@@ -11,6 +11,7 @@ var opciones = {"start":true, "instruction": false, "exit":false}
 var diff = 4
 
 func _ready():
+	funcionesGlobales.inicializarJuego()
 	global.ESCENA_ACTUAL = "main.tscn"
 	print("Escena actual: "+global.ESCENA_ACTUAL)
 	if global.MENU_OPCION == "start":

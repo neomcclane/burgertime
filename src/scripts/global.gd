@@ -1,4 +1,4 @@
-var VELOCIDAD = 150
+var VELOCIDAD = 170
 var EN_ESCALERA = false
 var NO_ARRIBA = false
 var MOV_ESCALERA = false
@@ -22,3 +22,5 @@ var ACTUAL_ESCALERA = Vector2(-1, -1)
 var ACTUAL_ENEMIGO = Vector2(0, 992)
 var ACTUAL_VERONICA = Vector2(0, 992)
 var LISTA_POSICIONES = []
+
+var VELOCIDAD_CAIDA = 25.9 

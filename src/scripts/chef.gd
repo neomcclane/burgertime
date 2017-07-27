@@ -64,6 +64,9 @@ func _draw():
 func _ready():
 	for ene in get_parent().get_node("enemigos").get_children():
 		enemigos.append(ene)
+		rayIzq.add_exception(ene)
+		rayDer.add_exception(ene)
+
 	pimienta.set_z(150)
 	if izquierda:
 		eje_particulas.set_pos(Vector2(-8, 0))
@@ -84,6 +87,7 @@ func _ready():
 	add_to_group("player")
 	rayIzq.add_exception(self)
 	rayDer.add_exception(self)
+
 	set_fixed_process(true)
 	set_process_input(true)
 
@@ -392,8 +396,7 @@ func existeEscaleraColision(obj):
 	return resultado
 
 func _on_chef_area_enter( area ):
-	if area.is_in_group("enemigos") and not area.detenido:
-		# if area.eje.get_global_pos().y == eje.get_global_pos().y:
+	if area.is_in_group("enemigos") and not area.detenido and not area.eliminado and not global.EMITIENDO_PIMIENTA:
 		muerte = true
 		if not muerte and banderaCambio and (bajarEscaleraDoble or bajarEscaleraNormal or subirEscaleraNormal) and direccion.y == 0:
 			anima0 = animaQuieto[randi()%2+0]

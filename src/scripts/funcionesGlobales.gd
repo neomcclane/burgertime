@@ -38,3 +38,6 @@ func reiniciarVariables():
 	global.NUM_VIDA = global.SAL_NUM_VIDA
 	global.NUM_PIMIENTA = global.SAL_NUM_PIMIENTA
 	global.GAME_OVER = false
+
+func  inicializarJuego():
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

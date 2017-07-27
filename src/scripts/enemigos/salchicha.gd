@@ -1,22 +1,22 @@
 extends Area2D
 
 export var vecInicial = Vector2()
+export var vecReinicio = Vector2(-1, -1)
+export var diffAlimentoCaida = 40
 
 onready var sprite = get_node("sprite")
 onready var eje = get_node("eje")
 onready var animacion = get_node("animacion")
+onready var ray = get_node("ray")
+onready var raiz = get_owner()
 
+var auxVecInicial = null
 var VELOCIDAD = 140
 
-var escaleras = {}
 var chef = null
-var enEscena = false
 var pisoActual = 0
 var posX = 0
 var posY = 0
-var matrizNivel = []
-var FILAS = 8
-var COLUMNAS = 17
 var posInicial = []
 var posFinal = []
 var camino = []
@@ -29,57 +29,30 @@ var anima0 = ""
 var anima1 = anima0
 
 var avanzar = true
-
 var detenido = false
 var tiempoDetenido = 0
 var tiempoDetenidoMax = 5.0
 
+var eliminado = false
+var tiempoEliminado = 0
+var tiempoEliminadoMax = 2
 
-func inicializarEscaleras():
-	if get_parent().get_parent().get_node("escaleras") != null:
-		enEscena = true
-		chef = get_parent().get_parent().get_node("chef")
-		var nodoEscaleras = get_parent().get_parent().get_node("escaleras")
-		for nodo in nodoEscaleras.get_children():
-			var clave = int(nodo.get_name())
-			escaleras[clave] = []
-			for escalera in nodo.get_children():
-				escaleras[clave].append(escalera)
+var dentroAlimento = null
+var caer = false
 
-func crearMatrizNivel1():
-	var vector = []
-	for fila in range(FILAS):
-		for columna in range(COLUMNAS):
-			vector.append(Vector2(-2,-2))
-		matrizNivel.append(vector)
-		vector = []
+func _ready():
+	add_to_group("enemigos")
+	set_z(100)
+	if vecReinicio.x != -1 and vecReinicio.y != -1:
+		auxVecInicial = vecReinicio
+	else:
+		auxVecInicial = vecInicial
 
-func generarMatriz():
-	var col = -1
-	var colAux = -1
-	var dibujado = false
-
-	for pos in range(8):
-		for escalera in escaleras[pos]:
-			col = int(escalera.get_name())
-			if not escalera.is_in_group("escaleras"):
-				matrizNivel[pos][col] = Vector2(-1,-1)
-			else:
-				if escalera.filas == 4:
-					matrizNivel[pos-1][col] = Vector2(escalera.posicion.get_global_pos().x, escalera.posicion.get_global_pos().y-(escalera.filas*escalera.ancho)) 
-				elif escalera.filas == 8:
-					matrizNivel[pos-1][col] = Vector2(-3,-3)
-					matrizNivel[pos-2][col] = Vector2(escalera.posicion.get_global_pos().x, escalera.posicion.get_global_pos().y-(escalera.filas*escalera.ancho)) 
-				elif escalera.filas == 12:
-					matrizNivel[pos-1][col] = Vector2(-3,-3)
-					matrizNivel[pos-2][col] = Vector2(-3,-3)
-					matrizNivel[pos-3][col] = Vector2(escalera.posicion.get_global_pos().x, escalera.posicion.get_global_pos().y-(escalera.filas*escalera.ancho)) 
-				matrizNivel[pos][col] = escalera.posicion.get_global_pos()
-			
-			
+	ray.add_exception(self)
+	chef = raiz.get_node("chef")
 	
-	# for vector in matrizNivel:
-	# 	print(vector)
+	set_fixed_process(true)
+
 
 func localizarPosicion(player):
 	var posChef = player.eje.get_global_pos()
@@ -87,20 +60,20 @@ func localizarPosicion(player):
 	var posAux = null
 	var salida = false
 	var v = []
-
+	
 	var p0 = null
 	var p1 = null
 
-	for fila in range(FILAS):
-		for columna in range(COLUMNAS):
-			if posAux != null and posAux.y == matrizNivel[fila][columna].y and matrizNivel[fila][columna].y+diff >= posChef.y and matrizNivel[fila][columna].x+32 >= posChef.x:
+	for fila in range(raiz.FILAS):
+		for columna in range(raiz.COLUMNAS):
+			if posAux != null and posAux.y == raiz.matrizNivel[fila][columna].y and raiz.matrizNivel[fila][columna].y+diff >= posChef.y and raiz.matrizNivel[fila][columna].x+32 >= posChef.x:
 				v = [Vector2(p0, p1), Vector2(fila, columna)]
 				salida = true	
 				break
-			elif matrizNivel[fila][columna].x != -1 and matrizNivel[fila][columna].x != -2:
+			elif raiz.matrizNivel[fila][columna].x != -1 and raiz.matrizNivel[fila][columna].x != -2:
 				p0 = fila
 				p1 = columna
-				posAux = matrizNivel[fila][columna]
+				posAux = raiz.matrizNivel[fila][columna]
 
 		if salida:
 			break
@@ -135,22 +108,22 @@ func generarCamino(posInicio, posFin, arreglo=[]):
 	while pActual.x != pFinal.x or pActual.y != pFinal.y:
 		vCerrado.append(Vector2(pActual.x, pActual.y))
 		#izquierda
-		if pActual.y > 0 and matrizNivel[pActual.x][pActual.y-1].x != -2 and not existeCerrado(Vector2(pActual.x, pActual.y-1), vCerrado) and not existeAbierto(Vector2(pActual.x, pActual.y-1), vAbierto):
+		if pActual.y > 0 and raiz.matrizNivel[pActual.x][pActual.y-1].x != -2 and not existeCerrado(Vector2(pActual.x, pActual.y-1), vCerrado) and not existeAbierto(Vector2(pActual.x, pActual.y-1), vAbierto):
 			h = abs(pActual.x-pFinal.x)+abs((pActual.y-1)-pFinal.y) 
 			f = h + 10 
 			auxCamino.append([Vector2(pActual.x, pActual.y-1), f])
 		#derecha
-		if pActual.y < (COLUMNAS-1) and matrizNivel[pActual.x][pActual.y+1].x != -2 and not existeCerrado(Vector2(pActual.x, pActual.y+1), vCerrado) and not existeAbierto(Vector2(pActual.x, pActual.y+1), vAbierto):
+		if pActual.y < (raiz.COLUMNAS-1) and raiz.matrizNivel[pActual.x][pActual.y+1].x != -2 and not existeCerrado(Vector2(pActual.x, pActual.y+1), vCerrado) and not existeAbierto(Vector2(pActual.x, pActual.y+1), vAbierto):
 			h = abs(pActual.x-pFinal.x)+abs((pActual.y+1)-pFinal.y) 
 			f = h + 10
 			auxCamino.append([Vector2(pActual.x, pActual.y+1), f])
 		#arriba OJO
-		if pActual.x > 0 and matrizNivel[pActual.x][pActual.y].x != -1 and matrizNivel[pActual.x-1][pActual.y].y != -2 and matrizNivel[pActual.x-1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x-1, pActual.y), vCerrado) and not existeAbierto(Vector2(pActual.x-1, pActual.y), vAbierto):
+		if pActual.x > 0 and raiz.matrizNivel[pActual.x][pActual.y].x != -1 and raiz.matrizNivel[pActual.x-1][pActual.y].y != -2 and raiz.matrizNivel[pActual.x-1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x-1, pActual.y), vCerrado) and not existeAbierto(Vector2(pActual.x-1, pActual.y), vAbierto):
 			h = abs((pActual.x-1)-pFinal.x)+abs(pActual.y-pFinal.y) 
 			f = h + 10
 			auxCamino.append([Vector2(pActual.x-1, pActual.y), f])
 		#abajo OJO
-		if pActual.x < (FILAS-1) and matrizNivel[pActual.x][pActual.y].x != -1 and matrizNivel[pActual.x+1][pActual.y].y != -2 and matrizNivel[pActual.x+1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x+1, pActual.y), vCerrado) and not existeAbierto(Vector2(pActual.x+1, pActual.y), vAbierto):
+		if pActual.x < (raiz.FILAS-1) and raiz.matrizNivel[pActual.x][pActual.y].x != -1 and raiz.matrizNivel[pActual.x+1][pActual.y].y != -2 and raiz.matrizNivel[pActual.x+1][pActual.y].y != -1 and not existeCerrado(Vector2(pActual.x+1, pActual.y), vCerrado) and not existeAbierto(Vector2(pActual.x+1, pActual.y), vAbierto):
 			h = abs((pActual.x+1)-pFinal.x)+abs(pActual.y-pFinal.y) 
 			f = h + 10
 			auxCamino.append([Vector2(pActual.x+1, pActual.y), f])
@@ -217,15 +190,15 @@ func generarCamino(posInicio, posFin, arreglo=[]):
 	return vCamino
 
 func convertirPosicion(posicion):
-	for i in range(matrizNivel.size()):
-		for j in range(matrizNivel[i].size()):
-			if posicion.x == matrizNivel[i][j].x and posicion.y == matrizNivel[i][j].y:
+	for i in range(raiz.matrizNivel.size()):
+		for j in range(raiz.matrizNivel[i].size()):
+			if posicion.x == raiz.matrizNivel[i][j].x and posicion.y == raiz.matrizNivel[i][j].y:
 				return [i, j]
 	return [-1, -1]
 
 func animacion():
 	anima1 = anima0
-	if avanzar:
+	if not eliminado and avanzar:
 		#derecha
 		if direcionAnima == 0:
 			sprite.set_flip_h(false)
@@ -240,12 +213,15 @@ func animacion():
 		#abajo
 		elif direcionAnima == 3:
 			anima0 = "escaleras"	
-	else:
-		if direcionAnima > 1:
-			anima0 = "idleEscalera"
-		else:
-			anima0 = "idle"
 	
+	elif not eliminado and direcionAnima > 1:
+		anima0 = "idleEscalera"
+	
+	elif detenido:
+		anima0 = "detenido"
+	elif not avanzar:
+		anima0 = "idle"
+
 	if anima0 != anima1:
 		animacion.play(anima0)
 
@@ -318,37 +294,39 @@ func hallarPunto(tipo):
 	var p1 = null
 	# busqueda por la arriba
 	if tipo == 0:
-		for i in range(1, FILAS):
-			if (p[0]-i) >= 0 and matrizNivel[p[0]-i][p[1]].x >= 0:
+		for i in range(1, raiz.FILAS):
+			if (p[0]-i) >= 0 and raiz.matrizNivel[p[0]-i][p[1]].x >= 0:
 				p1 = Vector2(p[0]-i, p[1])
 				break
+
 	# busqueda por la abajo
 	elif tipo == 1:
-		for i in range(1, FILAS):
-			if (p[0]+i) < FILAS and matrizNivel[p[0]+i][p[1]].x >= 0:
+		for i in range(1, raiz.FILAS):
+			if (p[0]+i) < raiz.FILAS and raiz.matrizNivel[p[0]+i][p[1]].x >= 0:
 				p1 = Vector2(p[0]+i, p[1])
 				break
+
 	elif tipo == 2:
-		for i in range(1, COLUMNAS):
-			if (p[1]-i) >= 0 and matrizNivel[p[0]][p[1]-i].x >= 0:
+		for i in range(1, raiz.COLUMNAS):
+			if (p[1]-i) >= 0 and raiz.matrizNivel[p[0]][p[1]-i].x >= 0:
 				p1 = Vector2(p[0], p[1]-i)
 				break
 
 	# busqueda por la derecha
 	elif tipo == 3:
-		for i in range(1, COLUMNAS):
-			if (p[1]+i < COLUMNAS) and matrizNivel[p[0]][p[1]+i].x >= 0:
+		for i in range(1, raiz.COLUMNAS):
+			if (p[1]+i < raiz.COLUMNAS) and raiz.matrizNivel[p[0]][p[1]+i].x >= 0:
 				p1 = Vector2(p[0], p[1]+i)
 				break
 	if p1 != null:
-		global.LISTA_POSICIONES.append(Vector2(matrizNivel[p1.x][p1.y].x, matrizNivel[p1.x][p1.y].y))
+		global.LISTA_POSICIONES.append(Vector2(raiz.matrizNivel[p1.x][p1.y].x, raiz.matrizNivel[p1.x][p1.y].y))
 		ejecutarBusqueda()
 
 func transformarCamino():
 	var v = []
 	for elemento in camino:
-		if matrizNivel[elemento.x][elemento.y].x >= 0:
-			v.append(matrizNivel[elemento.x][elemento.y])
+		if raiz.matrizNivel[elemento.x][elemento.y].x >= 0:
+			v.append(raiz.matrizNivel[elemento.x][elemento.y])
 	
 	return v
 
@@ -366,45 +344,91 @@ func ejecutarBusqueda():
 		
 		var aux = []
 		for elemento in camino:
-			aux.append(matrizNivel[elemento.x][elemento.y])
+			aux.append(raiz.matrizNivel[elemento.x][elemento.y])
 		
 		camino = transformarCamino()
 		camino.invert()
 		set_process(true)
 
-func _ready():
-#	self.queue_free()
-	add_to_group("enemigos")
-	set_z(100)
-	crearMatrizNivel1()
-	inicializarEscaleras()
-	generarMatriz()
-	var pos = localizarPosicion(chef)
-	global.LISTA_POSICIONES.append(Vector2(matrizNivel[pos.x][pos.y].x, matrizNivel[pos.x][pos.y].y))
-	ejecutarBusqueda()
-	set_fixed_process(true)
+
 	
 func _fixed_process(delta):
-	if detenido and tiempoDetenido > tiempoDetenidoMax:
+	colisionCabeza()
+	analisisMovimiento(delta)
+	analisisCaida()
+	
+func analisisCaida():
+	if dentroAlimento != null and not caer:
+		if dentroAlimento.bajar and dentroAlimento.eje.get_global_pos().y >= self.eje.get_global_pos().y +10:
+			detenido = true
+			avanzar = false
+			caer = true
+			dentroAlimento.contadorCaida = 1
+			animacion()
+	
+	#Caer con el alimento
+	if dentroAlimento != null and dentroAlimento.banderaCaidaContinua and caer:
+		self.set_z(199)
+		set_global_pos(Vector2(self.get_global_pos().x, dentroAlimento.get_global_pos().y-diffAlimentoCaida))
+
+	elif dentroAlimento != null and not dentroAlimento.banderaCaidaContinua and caer:
+		reiniciarEnemigo()
+
+func analisisMovimiento(delta):
+	if not caer and not eliminado and detenido and tiempoDetenido > tiempoDetenidoMax:
 		tiempoDetenido = 0
 		detenido = false
 		avanzar = true
 		if global.LISTA_POSICIONES.size()> 0:
-				ejecutarBusqueda()
+			ejecutarBusqueda()
 		else:
 			movimientoFinal()
 
-	elif detenido and tiempoDetenido <= tiempoDetenidoMax:
+	elif not caer and not eliminado and detenido and tiempoDetenido <= tiempoDetenidoMax:
 		tiempoDetenido += 1*delta
+	
+	elif not caer and eliminado and not detenido and tiempoEliminado <= tiempoEliminadoMax:
+		tiempoEliminado += 1 *delta
+	
+	elif not caer and eliminado and not detenido and tiempoEliminado > tiempoEliminadoMax:
+		#global.LISTA_POSICIONES = []
+		tiempoEliminado = 0
+		avanzar = true
+		eliminado = false
+		vecInicial = auxVecInicial
+		camino = []
+		movimientoFinal()
+		self.show()
 
+func colisionCabeza():
+	if ray.is_colliding():
+		if ray.get_collider().is_in_group("alimento") and ray.get_collider().bajar:
+			reiniciarEnemigo()
+
+func reiniciarEnemigo():
+	self.hide()
+	set_z(100)
+	avanzar = false
+	detenido = false
+	eliminado = true
+	caer = false
+	dentroAlimento = null
+	self.set_pos(Vector2(auxVecInicial.x, auxVecInicial.y-45))
+	animacion()
 
 func _on_salchiha_area_enter( area ):
-	if area.get_name() == "chef":
+	if area.get_name() == "chef" and not global.EMITIENDO_PIMIENTA:
 		avanzar = false
 		animacion()
 		
-	elif area.is_in_group("pimienta") and global.EMITIENDO_PIMIENTA:
+	elif (area.is_in_group("pimienta") or area.get_name() == "chef") and global.EMITIENDO_PIMIENTA:
 		detenido = true
 		avanzar = false
 		animacion()
-	
+
+	elif area.is_in_group("alimento"):
+		dentroAlimento = area
+
+func _on_salchiha_area_exit( area ):
+	if area.is_in_group("alimento"):
+		dentroAlimento = null

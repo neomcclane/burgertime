@@ -15,6 +15,8 @@
 [node name="nivel_1" type="Node2D"]
 
 script/script = ExtResource( 1 )
+FILAS = 8
+COLUMNAS = 17
 
 [node name="barraInfo" parent="." instance=ExtResource( 2 )]
 
@@ -594,7 +596,7 @@ hambAbajo = true
 
 [node name="chef" parent="." instance=ExtResource( 9 )]
 
-transform/pos = Vector2( 670, 948 )
+transform/pos = Vector2( 671, 946 )
 
 [node name="paleta" parent="." instance=ExtResource( 10 )]
 
@@ -616,7 +618,8 @@ transform/pos = Vector2( 1150, 1210 )
 
 [node name="salchiha" parent="enemigos" instance=ExtResource( 11 )]
 
-transform/pos = Vector2( 220, 820 )
 vecInicial = Vector2( 0, 992 )
+vecReinicio = Vector2( 0, 992 )
+diffAlimentoCaida = 40
 
 

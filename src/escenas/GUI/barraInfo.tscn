@@ -5,7 +5,7 @@
 [ext_resource path="res://src/sprites/icons.png" type="Texture" id=3]
 [ext_resource path="res://src/sprites/icon_pimienta.png" type="Texture" id=4]
 
-[sub_resource type="StyleBoxFlat" id=3]
+[sub_resource type="StyleBoxFlat" id=1]
 
 content_margin/left = -1.0
 content_margin/right = -1.0
@@ -56,10 +56,11 @@ margin/left = -448.0
 margin/top = 0.0
 margin/right = 1088.0
 margin/bottom = 1376.0
-custom_styles/panel = SubResource( 3 )
+custom_styles/panel = SubResource( 1 )
 
 [node name="panelArriba" type="Panel" parent="Control"]
 
+editor/display_folded = true
 anchor/right = 1
 focus/ignore_mouse = false
 focus/stop_mouse = true

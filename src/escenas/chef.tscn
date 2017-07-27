@@ -202,6 +202,8 @@ transform/pos = Vector2( 8, 0 )
 
 [node name="pimienta" parent="." instance=ExtResource( 3 )]
 
+transform/pos = Vector2( 7.81817, 0 )
+
 [connection signal="area_enter" from="." to="." method="_on_chef_area_enter"]
 
 
